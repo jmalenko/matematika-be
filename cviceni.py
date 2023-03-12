@@ -444,10 +444,43 @@ c.tisk()
 class PosloupnostTri(Posloupnost):
     def __init__(self, nadpis = ""):
         if nadpis == "":
-            nadpis = "Tři"
+            nadpis = "Tři čísla, ruzné operace"
         super().__init__(nadpis)
 
 c = Cviceni(PosloupnostTri, 20)
 c.vyrob()
 c.tisk()
+
+
+class ZapornaCislaOdcitani(Odcitani):
+    def __init__(self, nadpis = ""):
+        super().__init__("Záporná čísla, odečti do záporného")
+
+    def vstup_nahodny(self):
+        self.a = randint(1, 5)
+        self.b = randint(1, 9)
+
+    def over_vysledek(self):
+        return self.c < 0
+
+c = Cviceni(ZapornaCislaOdcitani, 20)
+c.vyrob()
+c.tisk()
+
+
+class ZapornaCislaScitani(Scitani):
+    def __init__(self, nadpis = ""):
+        super().__init__("Záporná čísla, přičti k zápornému")
+
+    def vstup_nahodny(self):
+        self.a = randint(-5, -1)
+        self.b = randint(1, 9)
+
+    def over_vysledek(self):
+        return 0 < self.c
+
+c = Cviceni(ZapornaCislaScitani, 20)
+c.vyrob()
+c.tisk()
+
 
