@@ -1,4 +1,5 @@
 from random import randint
+import functools
 
 class Cviceni:
     def __init__(self, priklad, pocetPrikladu = 10):
@@ -324,3 +325,129 @@ c.tisk()
 c = Cviceni(OdcitaniDoDvacetiDoplnDruhehoCinitele, 20)
 c.vyrob()
 c.tisk()
+
+class Posloupnost(Priklad):
+    """
+A1 + A2 + ... + An = B
+pro každé i: Ai < max
+    """
+    def __init__(self, nadpis = "", N = 3, max = 5, neznama = None):
+        if nadpis == "":
+            nadpis = "Posloupnost operací"
+        if neznama == None:
+            neznama = N
+        super().__init__(nadpis)
+        self.N = N
+        self.max = max
+        self.neznama = neznama
+
+    def vstup_nahodny(self):
+        self.a = []
+        for i in range(self.N):
+            if i == 0:
+                n = randint(1, self.max) # Zjednoduseni
+            else:
+                n = randint(-self.max, self.max)
+            self.a.append(n)
+
+    def over_vysledek(self):
+        return self.b <= 2 * abs(self.max)
+
+    def spocitej(self):
+        self.b = functools.reduce(lambda x, y: x + y, self.a)
+
+    def tisk(self):
+        for i in range(len(self.a)):
+            n = self.a[i]
+            if i == self.neznama:
+                if i == 0:
+                    print("…", end = "")
+                else:
+                    print(" + …", end = "")
+            else:
+                if i == 0:
+                    print(n, end = "")
+                else:
+                    print(" + " if 0 <= n else " – ", end = "")
+                    print(abs(n), end = "")
+        print(" = ", end = "")
+        if self.N == self.neznama:
+            print("…", end = "")
+        else:
+            print(self.b, end = "")
+        print("")
+
+class PosloupnostTriScitance(Posloupnost):
+    def __init__(self, nadpis = ""):
+        if nadpis == "":
+            nadpis = "Tři sčítance"
+        super().__init__(nadpis)
+
+    def vstup_nahodny(self):
+        self.a = []
+        for i in range(self.N):
+            n = randint(1, self.max)
+            self.a.append(n)
+
+c = Cviceni(PosloupnostTriScitance, 20)
+c.vyrob()
+c.tisk()
+
+
+class PosloupnostCtyriScitance(Posloupnost):
+    def __init__(self, nadpis = ""):
+        if nadpis == "":
+            nadpis = "Čtyři sčítance"
+        super().__init__(nadpis, N = 4)
+
+    def vstup_nahodny(self):
+        self.a = []
+        for i in range(self.N):
+            n = randint(1, self.max)
+            self.a.append(n)
+
+c = Cviceni(PosloupnostCtyriScitance, 20)
+c.vyrob()
+c.tisk()
+
+
+class PosloupnostTriScitanceNeznama0(PosloupnostTriScitance):
+    def __init__(self, nadpis = ""):
+        super().__init__(nadpis)
+        self.neznama = 0
+
+c = Cviceni(PosloupnostTriScitanceNeznama0, 20)
+c.vyrob()
+c.tisk()
+
+
+class PosloupnostTriScitanceNeznama1(PosloupnostTriScitance):
+    def __init__(self, nadpis = ""):
+        super().__init__(nadpis)
+        self.neznama = 1
+
+c = Cviceni(PosloupnostTriScitanceNeznama1, 20)
+c.vyrob()
+c.tisk()
+
+
+class PosloupnostTriScitanceNeznama2(PosloupnostTriScitance):
+    def __init__(self, nadpis = ""):
+        super().__init__(nadpis)
+        self.neznama = 2
+
+c = Cviceni(PosloupnostTriScitanceNeznama2, 20)
+c.vyrob()
+c.tisk()
+
+
+class PosloupnostTri(Posloupnost):
+    def __init__(self, nadpis = ""):
+        if nadpis == "":
+            nadpis = "Tři"
+        super().__init__(nadpis)
+
+c = Cviceni(PosloupnostTri, 20)
+c.vyrob()
+c.tisk()
+
