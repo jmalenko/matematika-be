@@ -448,6 +448,13 @@ class PosloupnostTri(Posloupnost):
             nadpis = "Tři čísla, ruzné operace"
         super().__init__(nadpis)
 
+    def over_vysledek(self):
+        return super().over_vysledek() \
+                and functools.reduce(lambda a1, a2: a1 and a2, # pro každé i: Ai >= 0
+                        map(lambda a1: 0 <= a1, self.a) # B >= 0
+                    ) \
+                and 0 <= self.b # positive b
+
 c = Cviceni(PosloupnostTri, 20)
 c.vyrob()
 c.tisk()
