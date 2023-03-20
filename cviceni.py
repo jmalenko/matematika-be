@@ -229,7 +229,7 @@ class OdcitaniDoplnPrvnihoCinitele(Odcitani):
         super().__init__(nadpis)
 
     def tisk(self):
-        print("… – %d = %d" % (self.a, self.c))
+        print("… – %d = %d" % (self.b, self.c))
 
 class OdcitaniDoplnDruhehoCinitele(Odcitani):
     def __init__(self, nadpis = ""):
@@ -287,20 +287,6 @@ c.tisk()
 c = Cviceni(OdcitaniDoDvaceti, 20)
 c.vyrob()
 c.tisk()
-
-class OdcitaniDoDvacetiDoplnPrvnihoCinitele(OdcitaniDoDvaceti, OdcitaniDoplnPrvnihoCinitele):
-    def __init__(self, nadpis = ""):
-        super(OdcitaniDoDvacetiDoplnPrvnihoCinitele, self).__init__("Odčítání do 20, doplň prvního činitele")
-
-    def tisk(self):
-        OdcitaniDoplnPrvnihoCinitele.tisk(self)
-
-class OdcitaniDoDvacetiDoplnDruhehoCinitele(OdcitaniDoDvaceti, OdcitaniDoplnDruhehoCinitele):
-    def __init__(self, nadpis = ""):
-        super(OdcitaniDoDvacetiDoplnDruhehoCinitele, self).__init__("Odčítání do 20, doplň druhého činitele")
-
-    def tisk(self):
-        OdcitaniDoplnDruhehoCinitele.tisk(self)
 
 
 class OdcitaniDoDvacetiDoplnPrvnihoCinitele(OdcitaniDoDvaceti, OdcitaniDoplnPrvnihoCinitele):
