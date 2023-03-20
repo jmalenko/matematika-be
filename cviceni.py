@@ -159,11 +159,11 @@ class ScitaniDoDvacetiDoplnDruhehoCinitele(ScitaniDoDvaceti, ScitaniDoplnDruheho
         ScitaniDoplnDruhehoCinitele.tisk(self)
 
 
-c = Cviceni(ScitaniDoDvacetiDoplnPrvnihoCinitele, 20)
+c = Cviceni(ScitaniDoDvacetiDoplnDruhehoCinitele, 20)
 c.vyrob()
 c.tisk()
 
-c = Cviceni(ScitaniDoDvacetiDoplnDruhehoCinitele, 20)
+c = Cviceni(ScitaniDoDvacetiDoplnPrvnihoCinitele, 20)
 c.vyrob()
 c.tisk()
 
@@ -234,7 +234,7 @@ class OdcitaniDoplnPrvnihoCinitele(Odcitani):
 class OdcitaniDoplnDruhehoCinitele(Odcitani):
     def __init__(self, nadpis = ""):
         if nadpis == "":
-            nadpis = "Doplň prvního činitele"
+            nadpis = "Doplň druhého činitele"
         super().__init__(nadpis)
 
     def tisk(self):
@@ -318,13 +318,14 @@ class OdcitaniDoDvacetiDoplnDruhehoCinitele(OdcitaniDoDvaceti, OdcitaniDoplnDruh
         OdcitaniDoplnDruhehoCinitele.tisk(self)
 
 
+c = Cviceni(OdcitaniDoDvacetiDoplnDruhehoCinitele, 20)
+c.vyrob()
+c.tisk()
+
 c = Cviceni(OdcitaniDoDvacetiDoplnPrvnihoCinitele, 20)
 c.vyrob()
 c.tisk()
 
-c = Cviceni(OdcitaniDoDvacetiDoplnDruhehoCinitele, 20)
-c.vyrob()
-c.tisk()
 
 class Posloupnost(Priklad):
     """
@@ -411,12 +412,12 @@ c.vyrob()
 c.tisk()
 
 
-class PosloupnostTriScitanceNeznama0(PosloupnostTriScitance):
+class PosloupnostTriScitanceNeznama2(PosloupnostTriScitance):
     def __init__(self, nadpis = ""):
         super().__init__(nadpis)
-        self.neznama = 0
+        self.neznama = 2
 
-c = Cviceni(PosloupnostTriScitanceNeznama0, 20)
+c = Cviceni(PosloupnostTriScitanceNeznama2, 20)
 c.vyrob()
 c.tisk()
 
@@ -431,12 +432,12 @@ c.vyrob()
 c.tisk()
 
 
-class PosloupnostTriScitanceNeznama2(PosloupnostTriScitance):
+class PosloupnostTriScitanceNeznama0(PosloupnostTriScitance):
     def __init__(self, nadpis = ""):
         super().__init__(nadpis)
-        self.neznama = 2
+        self.neznama = 0
 
-c = Cviceni(PosloupnostTriScitanceNeznama2, 20)
+c = Cviceni(PosloupnostTriScitanceNeznama0, 20)
 c.vyrob()
 c.tisk()
 
