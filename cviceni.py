@@ -8,9 +8,11 @@ class Cviceni:
         self.priklady = []
 
     def vyrob(self):
-        for i in range(self.pocetPrikladu):
-            priklad = self.priklad()
+        while len(self.priklady) < self.pocetPrikladu:
+            priklad = self.prikladClass()
             priklad.vyrob()
+            if priklad in self.priklady:
+                continue
             self.priklady.append(priklad)
 
     def tisk(self):
@@ -40,6 +42,15 @@ class Priklad:
 
     def tisk(self):
         pass
+
+    def __eq__(self, item):
+        if self.__class__ != item.__class__:
+            return False
+        if self.a != item.a:
+            return False
+        if self.b != item.b:
+            return False
+        return True
 
 
 class Scitani(Priklad):
