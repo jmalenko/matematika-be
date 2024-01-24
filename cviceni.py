@@ -41,6 +41,7 @@ class Priklad:
             return False
         return True
 
+
 class Zadani:
     def __init__(self, nadpis):
         self.nadpis = nadpis
@@ -68,8 +69,10 @@ class Zadani:
     def tisk(self, parametry):
         raise NotImplementedError()
 
+
 class Parametry:
     pass
+
 
 # Binarni
 
@@ -145,6 +148,7 @@ class Scitani(ZadaniBinarni):
     def spocitej(self, parametry):
         parametry.c = parametry.a + parametry.b
 
+
 class Odcitani(ZadaniBinarni):
     nadpis = "Odčítání"
     op_text = "–"
@@ -182,18 +186,44 @@ def trivialni(parametry):
         return True
     if parametry.b in [0, 1]:
         return True
-    if parametry.c in [1]:
+    if parametry.c in [0, 1]:
         return True
     return False
+
+
+class OdcitaniSeZapornymi(Odcitani):
+    nadpis = "Odčítání se zápornými čísly"
+
+    def over_vysledek(self, parametry):
+        if parametry.b < 0:
+            return False
+        if 0 <= parametry.c:
+            return False
+
+        return super().over_vysledek(parametry)
+
+
+class ScitaniSeZapornymi(Scitani):
+    nadpis = "Sčítání se zápornými čísly"
+
+    def over_vysledek(self, parametry):
+        if 0 <= parametry.a and 0 <= parametry.b:
+            return False
+
+        return super().over_vysledek(parametry)
+
 
 class Clen():
     pass
 
+
 class Operand1(Clen):
     nadpis = "doplň první operand"
 
+
 class Operand2(Clen):
     nadpis = "doplň druhý operand"
+
 
 class Vysledek(Clen):
     nadpis = ""
@@ -203,6 +233,7 @@ def vytvor2(operator, od, do, dopln=Vysledek, pocet=20):
     c = Cviceni(operator(od, do, dopln), pocet)
     c.vyrob()
     c.tisk()
+
 
 def vytvor(operator, do, dopln=Vysledek, pocet=20):
     vytvor2(operator, 0, do, dopln, pocet)
@@ -216,6 +247,9 @@ def vytvor(operator, do, dopln=Vysledek, pocet=20):
 vytvor2(Scitani, 1, 5)
 vytvor2(Scitani, 1, 10)
 vytvor(Scitani, 10)
+
+vytvor2(OdcitaniSeZapornymi, -10, 10)
+vytvor2(ScitaniSeZapornymi, -10, 10)
 
 for do in [10, 13, 20, 30]:
     vytvor(Scitani, do)
@@ -235,12 +269,12 @@ for do in [10, 13, 20, 30]:
     vytvor(Deleni, do, Operand2)
 
 print("zaporna")
+
 print("posloupnosti")
 
 print("ciselna osa")
 
 exit()
-
 
 
 class OdcitaniDoDesetiOdectiMeneNezPet(OdcitaniDoDeseti):
