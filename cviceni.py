@@ -102,12 +102,21 @@ class ZadaniBinarni(Zadani):
         return self.operator.spocitej(parametry)
 
     def over_vysledek(self, parametry):
-        if trivialni(parametry):
-            hranice = 1 - self.do * self.do
+        if self.trivialni(parametry):
+            hranice = 1 - (0.1 / self.do)
             if random() < hranice:
                 return False
 
         return self.od <= parametry.c <= self.do
+
+    def trivialni(self, parametry):
+        if parametry.a in [0, 1]:
+            return True
+        if parametry.b in [0, 1]:
+            return True
+        if parametry.c in [0, 1]:
+            return True
+        return False
 
     def tisk(self, parametry):
         s = ""
@@ -179,16 +188,6 @@ class Deleni(ZadaniBinarni):
         parametry.c = int(parametry.c)
 
         return super().over_vysledek(parametry)
-
-
-def trivialni(parametry):
-    if parametry.a in [0, 1]:
-        return True
-    if parametry.b in [0, 1]:
-        return True
-    if parametry.c in [0, 1]:
-        return True
-    return False
 
 
 class OdcitaniSeZapornymi(Odcitani):
@@ -268,7 +267,6 @@ for do in [10, 13, 20, 30]:
     vytvor(Deleni, do, Operand1)
     vytvor(Deleni, do, Operand2)
 
-print("zaporna")
 
 print("posloupnosti")
 
