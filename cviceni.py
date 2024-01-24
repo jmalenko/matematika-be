@@ -24,7 +24,7 @@ class Cviceni:
         zadani = self.priklady[0].zadani
 
         # Vypis nadpis prvniho prikladu
-        print(zadani.nadpis)
+        print("Cvičení: %s" % zadani.nadpis)
 
         # Vypis ciselnou osu
         if isinstance(zadani, ZadaniBinarni):
@@ -308,6 +308,9 @@ for do in [10, 13, 20, 30, 50]:
     vytvor(Odcitani, do)
     vytvor(Odcitani, do, Operand1)
     vytvor(Odcitani, do, Operand2)
+
+    if do % 10 != 0:  # Priklady na nasobeni a deleni nepotrebuji mezikroky
+        continue
 
     vytvor(Nasobeni, do)
     vytvor(Nasobeni, do, Operand1)
