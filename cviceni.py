@@ -112,9 +112,6 @@ class ZadaniBinarni(Zadani):
         parmametry.b = randint(self.od, self.do)
         return parmametry
 
-    def spocitej(self, parametry):
-        return self.operator.spocitej(parametry)
-
     def over_vysledek(self, parametry):
         if self.nezajimave(parametry):
             hranice = 1 - (1 / self.do)
@@ -320,181 +317,120 @@ for do in [10, 13, 20, 30, 50]:
     vytvor(Deleni, do, Operand1)
     vytvor(Deleni, do, Operand2)
 
-print("posloupnosti")
 
-exit()
-
-
-class Posloupnost(Priklad):
+class Posloupnost(Zadani):
     """
-A1 + A2 + ... + An = B
-pro každé i: Ai < max
+A0 + A1 + ... + An-1 = B
+pro každé i: od <= Ai <= do
     """
 
-    def __init__(self, nadpis="", N=3, max=5, neznama=None):
-        if nadpis == "":
-            nadpis = "Posloupnost operací"
+    def __init__(self, N, od, do, neznama=None):
+        # Sestav nadpis
+        nadpis = "Posloupnost operací"
+        nadpis += " délky %d" % N
+        nadpis += ", čísla od %d do %d" % (od, do)
+        if neznama != None:
+            nadpis += ", doplň %d. číslo" % neznama
+        super().__init__(nadpis)
+
         if neznama == None:
             neznama = N
-        super().__init__(nadpis)
+
         self.N = N
-        self.max = max
+        self.od = od
+        self.do = do
         self.neznama = neznama
 
     def vstup_nahodny(self):
-        self.a = []
+        parmametry = ParametryPosl()
+        parmametry.a = []
         for i in range(self.N):
-            if i == 0:
-                n = randint(1, self.max)  # Zjednoduseni
-            else:
-                n = randint(-self.max, self.max)
-            self.a.append(n)
+            n = randint(self.od, self.do)
+            parmametry.a.append(n)
+        return parmametry
 
-    def over_vysledek(self):
-        return self.b <= 2 * abs(self.max)
+    def spocitej(self, parametry):
+        parametry.b = functools.reduce(lambda x, y: x + y, parametry.a)
 
-    def spocitej(self):
-        self.b = functools.reduce(lambda x, y: x + y, self.a)
-
-    def tisk(self):
-        for i in range(len(self.a)):
-            n = self.a[i]
+    def tisk(self, parametry):
+        s = ""
+        for i in range(len(parametry.a)):
+            n = parametry.a[i]
             if i == self.neznama:
-                if i == 0:
-                    print("…", end="")
-                else:
-                    print(" + …", end="")
+                if i != 0:
+                    s += " + "
+                s += "…"
             else:
                 if i == 0:
-                    print(n, end="")
+                    s += str(n)
                 else:
-                    print(" + " if 0 <= n else " – ", end="")
-                    print(abs(n), end="")
-        print(" = ", end="")
-        if self.N == self.neznama:
-            print("…", end="")
-        else:
-            print(self.b, end="")
-        print("")
+                    s += " + " if 0 <= n else " – "
+                    s += str(abs(n))
+        s += " = "
+        s += str(parametry.b) if self.N != self.neznama else "…"
+        print(s)
+
+    def __eq__(self, item):
+        if self.__class__ != item.__class__:
+            return False
+        if self.N != item.N:
+            return False
+        if self.od != item.od:
+            return False
+        if self.do != item.do:
+            return False
+        return True
 
 
-class PosloupnostTriScitance(Posloupnost):
-    def __init__(self, nadpis=""):
-        if nadpis == "":
-            nadpis = "Tři sčítance"
-        super().__init__(nadpis)
+class ParametryPosl(Parametry):
+    a = None
+    b = None
 
-    def vstup_nahodny(self):
-        self.a = []
-        for i in range(self.N):
-            n = randint(1, self.max)
-            self.a.append(n)
-
-
-c = Cviceni(PosloupnostTriScitance, 20)
-c.vyrob()
-c.tisk()
-
-
-class PosloupnostCtyriScitance(Posloupnost):
-    def __init__(self, nadpis=""):
-        if nadpis == "":
-            nadpis = "Čtyři sčítance"
-        super().__init__(nadpis, N=4)
-
-    def vstup_nahodny(self):
-        self.a = []
-        for i in range(self.N):
-            n = randint(1, self.max)
-            self.a.append(n)
+    def __eq__(self, item):
+        if self.__class__ != item.__class__:
+            return False
+        if len(self.a) != len(item.a):
+            return False
+        for i in range(len(self.a)):
+            if self.a[i] != item.a[i]:
+                return False
+        if self.b != item.b:
+            return False
+        return True
 
 
-c = Cviceni(PosloupnostCtyriScitance, 20)
-c.vyrob()
-c.tisk()
+def vytvorPosl(N, od, do, neznama=None, pocet=20):
+    c = Cviceni(Posloupnost(N, od, do, neznama), pocet)
+    c.vyrob()
+    c.tisk()
 
 
-class PosloupnostTriScitanceNeznama2(PosloupnostTriScitance):
-    def __init__(self, nadpis=""):
-        super().__init__(nadpis)
-        self.neznama = 2
+vytvorPosl(3, 1, 5)
+vytvorPosl(3, 1, 5, 0)
+vytvorPosl(3, 1, 5, 1)
+vytvorPosl(3, 1, 5, 2)
 
+vytvorPosl(4, 1, 5)
+vytvorPosl(4, 1, 5, 0)
+vytvorPosl(4, 1, 5, 1)
+vytvorPosl(4, 1, 5, 2)
+vytvorPosl(4, 1, 5, 3)
 
-c = Cviceni(PosloupnostTriScitanceNeznama2, 20)
-c.vyrob()
-c.tisk()
+# Vcetne zapornych cisel
 
+vytvorPosl(3, -5, 5)
+vytvorPosl(3, -5, 5, 0)
+vytvorPosl(3, -5, 5, 1)
+vytvorPosl(3, -5, 5, 2)
 
-class PosloupnostTriScitanceNeznama1(PosloupnostTriScitance):
-    def __init__(self, nadpis=""):
-        super().__init__(nadpis)
-        self.neznama = 1
+vytvorPosl(4, -5, 5)
+vytvorPosl(4, -5, 5, 0)
+vytvorPosl(4, -5, 5, 1)
+vytvorPosl(4, -5, 5, 2)
+vytvorPosl(4, -5, 5, 3)
 
-
-c = Cviceni(PosloupnostTriScitanceNeznama1, 20)
-c.vyrob()
-c.tisk()
-
-
-class PosloupnostTriScitanceNeznama0(PosloupnostTriScitance):
-    def __init__(self, nadpis=""):
-        super().__init__(nadpis)
-        self.neznama = 0
-
-
-c = Cviceni(PosloupnostTriScitanceNeznama0, 20)
-c.vyrob()
-c.tisk()
-
-
-class PosloupnostTri(Posloupnost):
-    def __init__(self, nadpis=""):
-        if nadpis == "":
-            nadpis = "Tři čísla, ruzné operace"
-        super().__init__(nadpis)
-
-    def over_vysledek(self):
-        return super().over_vysledek() \
-               and functools.reduce(lambda a1, a2: a1 and a2,  # pro každé i: Ai >= 0
-                                    map(lambda a1: 0 <= a1, self.a)  # B >= 0
-                                    ) \
-               and 0 <= self.b  # positive b
-
-
-c = Cviceni(PosloupnostTri, 20)
-c.vyrob()
-c.tisk()
-
-
-class ZapornaCislaOdcitani(Odcitani):
-    def __init__(self, nadpis=""):
-        super().__init__("Záporná čísla, odečti do záporného")
-
-    def vstup_nahodny(self):
-        self.a = randint(1, 5)
-        self.b = randint(1, 9)
-
-    def over_vysledek(self):
-        return self.c < 0
-
-
-c = Cviceni(ZapornaCislaOdcitani, 20)
-c.vyrob()
-c.tisk()
-
-
-class ZapornaCislaScitani(Scitani):
-    def __init__(self, nadpis=""):
-        super().__init__("Záporná čísla, přičti k zápornému")
-
-    def vstup_nahodny(self):
-        self.a = randint(-5, -1)
-        self.b = randint(1, 9)
-
-    def over_vysledek(self):
-        return 0 < self.c
-
-
-c = Cviceni(ZapornaCislaScitani, 20)
-c.vyrob()
-c.tisk()
+# Velka cisla
+vytvorPosl(3, -20, 20)
+vytvorPosl(3, -20, 20, 0)
+vytvorPosl(3, -20, 20, 1)
+vytvorPosl(3, -20, 20, 2)
