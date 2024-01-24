@@ -21,9 +21,23 @@ class Cviceni:
             self.priklady.append(priklad)
 
     def tisk(self):
-        print(self.priklady[0].zadani.nadpis)  # Vypis nadpis prvniho prikladu
-        for priklad in self.priklady:
-            priklad.tisk()
+        zadani = self.priklady[0].zadani
+
+        # Vypis nadpis prvniho prikladu
+        print(zadani.nadpis)
+
+        # Vypis ciselnou osu
+        if isinstance(zadani, ZadaniBinarni):
+            if zadani.do <= 20:
+                osa = "Číselná osa   "
+                for i in range(zadani.od, zadani.do + 1):
+                    if osa != "":
+                        osa += " "
+                    osa += str(i)
+                print(osa)
+
+        for zadani in self.priklady:
+            zadani.tisk()
 
 
 class Priklad:
@@ -307,8 +321,6 @@ for do in [10, 13, 20, 30, 50]:
     vytvor(Deleni, do, Operand2)
 
 print("posloupnosti")
-
-print("ciselna osa")
 
 exit()
 
