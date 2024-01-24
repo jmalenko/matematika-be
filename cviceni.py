@@ -102,19 +102,35 @@ class ZadaniBinarni(Zadani):
         return self.operator.spocitej(parametry)
 
     def over_vysledek(self, parametry):
-        if self.trivialni(parametry):
-            hranice = 1 - (0.1 / self.do)
+        if self.nezajimave(parametry):
+            hranice = 1 - (1 / self.do)
             if random() < hranice:
                 return False
 
         return self.od <= parametry.c <= self.do
 
+    def nezajimave(self, parametry):
+        # Nezajimave prametry jsou:
+        # 1) trivialni nebo
+        # 2) jednoduche (nedostatecne velka cisla)
+        return self.trivialni(parametry) or self.jednoduche(parametry)
+
     def trivialni(self, parametry):
+        if self.do <= 10:
+            return False
         if parametry.a in [0, 1]:
             return True
         if parametry.b in [0, 1]:
             return True
         if parametry.c in [0, 1]:
+            return True
+        return False
+
+    def jednoduche(self, parametry):
+        if self.do <= 20:
+            return False
+        hranice = 0.6 * self.do
+        if parametry.a < hranice and parametry.b < hranice and parametry.c < hranice:
             return True
         return False
 
@@ -190,6 +206,26 @@ class Deleni(ZadaniBinarni):
         return super().over_vysledek(parametry)
 
 
+class OdcitaniOdectiMeneNezPet(Odcitani):
+    nadpis = "Odčítání (odečti méně nez pět)"
+
+    def over_vysledek(self, parametry):
+        if 5 < parametry.b:
+            return False
+
+        return super().over_vysledek(parametry)
+
+
+class OdcitaniOdectiViceNezPet(Odcitani):
+    nadpis = "Odčítání (odečti více nez pět)"
+
+    def over_vysledek(self, parametry):
+        if parametry.b <= 5:
+            return False
+
+        return super().over_vysledek(parametry)
+
+
 class OdcitaniSeZapornymi(Odcitani):
     nadpis = "Odčítání se zápornými čísly"
 
@@ -247,10 +283,13 @@ vytvor2(Scitani, 1, 5)
 vytvor2(Scitani, 1, 10)
 vytvor(Scitani, 10)
 
+vytvor(OdcitaniOdectiMeneNezPet, 10)
+vytvor(OdcitaniOdectiViceNezPet, 10)
+
 vytvor2(OdcitaniSeZapornymi, -10, 10)
 vytvor2(ScitaniSeZapornymi, -10, 10)
 
-for do in [10, 13, 20, 30]:
+for do in [10, 13, 20, 30, 50]:
     vytvor(Scitani, do)
     vytvor(Scitani, do, Operand1)
     vytvor(Scitani, do, Operand2)
@@ -267,28 +306,11 @@ for do in [10, 13, 20, 30]:
     vytvor(Deleni, do, Operand1)
     vytvor(Deleni, do, Operand2)
 
-
 print("posloupnosti")
 
 print("ciselna osa")
 
 exit()
-
-
-class OdcitaniDoDesetiOdectiMeneNezPet(OdcitaniDoDeseti):
-    def __init__(self):
-        super().__init__("Odčítání do deseti, odečti méně než pět")
-
-    def over_vysledek(self):
-        return super().over_vysledek() and self.b < 5
-
-
-class OdcitaniDoDesetiOdectiViceNezPet(OdcitaniDoDeseti):
-    def __init__(self):
-        super().__init__("Odčítání do deseti, odečti více než pět (včetně)")
-
-    def over_vysledek(self):
-        return super().over_vysledek() and 5 <= self.b
 
 
 class Posloupnost(Priklad):
