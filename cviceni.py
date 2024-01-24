@@ -290,6 +290,15 @@ def vytvor(operator, do, dopln=Vysledek, pocet=20):
 # vytvor(Nasobeni, 10)
 # vytvor(Deleni, 10)
 
+def ciselna_osa_svisle():
+    osa = "Číselná osa\n"
+    for i in range(20, -11, -1):
+        osa += "%3d\n" % i
+    print(osa, end="")
+
+
+ciselna_osa_svisle()
+
 vytvor2(Scitani, 1, 5)
 vytvor2(Scitani, 1, 10)
 vytvor(Scitani, 10)
