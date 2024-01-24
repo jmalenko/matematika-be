@@ -1,5 +1,5 @@
 import functools
-from random import randint
+from random import random, randint
 
 
 class Cviceni:
@@ -9,7 +9,7 @@ class Cviceni:
         self.priklady = []
 
     def vyrob(self):
-        dup_zbyva = 10
+        dup_zbyva = 100
         while len(self.priklady) < self.pocetPrikladu:
             priklad = self.zadani.vyrob_priklad()
 
@@ -41,17 +41,19 @@ class Priklad:
             return False
         return True
 
-
 class Zadani:
     def __init__(self, nadpis):
         self.nadpis = nadpis
 
     def vyrob_priklad(self):
         while True:
-            parametry = self.vstup_nahodny()
-            self.spocitej(parametry)
-            if self.over_vysledek(parametry):
-                break
+            try:
+                parametry = self.vstup_nahodny()
+                self.spocitej(parametry)
+                if self.over_vysledek(parametry):
+                    break
+            except:
+                continue
         return Priklad(self, parametry)
 
     def vstup_nahodny(self):
@@ -66,28 +68,23 @@ class Zadani:
     def tisk(self, parametry):
         raise NotImplementedError()
 
-
 class Parametry:
     pass
-
 
 # Binarni
 
 class ZadaniBinarni(Zadani):
-    op_text = None
-
-    def __init__(self, operator, od, do, typ):
+    def __init__(self, od, do, typ):
         # Sestav nadpis
-        nadpis = operator.nadpis
+        nadpis = self.nadpis
         if do <= 10:
-            if od != 1:
+            if od != 0:
                 nadpis += " od %d" % od
         nadpis += " do %d" % do
         if typ.nadpis != "":
             nadpis += ", %s" % typ.nadpis
         super().__init__(nadpis)
 
-        self.operator = operator
         self.od = od
         self.do = do
         self.typ = typ
@@ -102,13 +99,18 @@ class ZadaniBinarni(Zadani):
         return self.operator.spocitej(parametry)
 
     def over_vysledek(self, parametry):
+        if trivialni(parametry):
+            hranice = 1 - self.do * self.do
+            if random() < hranice:
+                return False
+
         return self.od <= parametry.c <= self.do
 
     def tisk(self, parametry):
         s = ""
         s += str(parametry.a) if self.typ is not Operand1 else "…"
         s += " "
-        s += self.operator.op_text
+        s += self.op_text
         s += " "
         s += str(parametry.b) if self.typ is not Operand2 else "…"
         s += " = "
@@ -117,8 +119,6 @@ class ZadaniBinarni(Zadani):
 
     def __eq__(self, item):
         if self.__class__ != item.__class__:
-            return False
-        if self.operator != item.operator:
             return False
         return True
 
@@ -142,68 +142,76 @@ class Scitani(ZadaniBinarni):
     nadpis = "Sčítání"
     op_text = "+"
 
-    def spocitej(parametry):
+    def spocitej(self, parametry):
         parametry.c = parametry.a + parametry.b
-
 
 class Odcitani(ZadaniBinarni):
     nadpis = "Odčítání"
     op_text = "–"
 
-    def spocitej(parametry):
+    def spocitej(self, parametry):
         parametry.c = parametry.a - parametry.b
 
 
-# class Nasobeni(ZadaniBinarni):
-#     nadpis = "Násobení"
-#     op_text = "·"
-#
-#     def spocitej(parametry):
-#         parametry.c = parametry.a * parametry.b
-#
-# class Deleni(ZadaniBinarni):
-#     nadpis = "Dělení"
-#     op_text = ":"
-#
-#     def spocitej(parametry):
-#         parametry.c = parametry.a / parametry.b
-#
-#     def over_vysledek(self, parametry):
-#         if not super.over_vysledek(parametry):
-#             return False
-#
-#         if not int(parametry.c) == parametry.c:
-#             return False
-#         parametry.c = int(parametry.c)
-#
-#         return self.od <= parametry.c <= self.do
+class Nasobeni(ZadaniBinarni):
+    nadpis = "Násobení"
+    op_text = "·"
 
+    def spocitej(self, parametry):
+        parametry.c = parametry.a * parametry.b
+
+
+class Deleni(ZadaniBinarni):
+    nadpis = "Dělení"
+    op_text = ":"
+
+    def spocitej(self, parametry):
+        parametry.c = parametry.a / parametry.b
+
+    def over_vysledek(self, parametry):
+        # Konverze na cele cislo
+        if int(parametry.c) != parametry.c:
+            return False
+        parametry.c = int(parametry.c)
+
+        return super().over_vysledek(parametry)
+
+
+def trivialni(parametry):
+    if parametry.a in [0, 1]:
+        return True
+    if parametry.b in [0, 1]:
+        return True
+    if parametry.c in [1]:
+        return True
+    return False
 
 class Clen():
     pass
 
-
 class Operand1(Clen):
-    nadpis = "doplň prvního činitele"
-
+    nadpis = "doplň první operand"
 
 class Operand2(Clen):
-    nadpis = "doplň druhého činitele"
-
+    nadpis = "doplň druhý operand"
 
 class Vysledek(Clen):
     nadpis = ""
 
 
 def vytvor2(operator, od, do, dopln=Vysledek, pocet=20):
-    c = Cviceni(ZadaniBinarni(operator, od, do, dopln), pocet)
+    c = Cviceni(operator(od, do, dopln), pocet)
     c.vyrob()
     c.tisk()
-
 
 def vytvor(operator, do, dopln=Vysledek, pocet=20):
     vytvor2(operator, 0, do, dopln, pocet)
 
+
+# vytvor(Scitani, 10)
+# vytvor(Odcitani, 10)
+# vytvor(Nasobeni, 10)
+# vytvor(Deleni, 10)
 
 vytvor2(Scitani, 1, 5)
 vytvor2(Scitani, 1, 10)
@@ -218,182 +226,21 @@ for do in [10, 13, 20, 30]:
     vytvor(Odcitani, do, Operand1)
     vytvor(Odcitani, do, Operand2)
 
-    # vytvor(Nasobeni, do)
-    # vytvor(Nasobeni, do, Operand1)
-    # vytvor(Nasobeni, do, Operand2)
-    #
-    # vytvor(Deleni, do)
-    # vytvor(Deleni, do, Operand1)
-    # vytvor(Deleni, do, Operand2)
+    vytvor(Nasobeni, do)
+    vytvor(Nasobeni, do, Operand1)
+    vytvor(Nasobeni, do, Operand2)
+
+    vytvor(Deleni, do)
+    vytvor(Deleni, do, Operand1)
+    vytvor(Deleni, do, Operand2)
 
 print("zaporna")
 print("posloupnosti")
-print("nasobeni")
-print("deleni")
 
 print("ciselna osa")
 
 exit()
 
-
-
-class ScitaniDo(Scitani):
-    def __init__(self, max, nadpis=""):
-        if nadpis == "":
-            nadpis = "Sčítání do %d" % (max)
-        super().__init__(nadpis)
-        self.max = max
-
-    def vstup_nahodny(self):
-        self.a = randint(0, self.max)
-        self.b = randint(0, self.max)
-
-    def over_vysledek(self):
-        return 0 <= self.c <= self.max
-
-
-class ScitaniDoDeseti(ScitaniDo):
-    def __init__(self, nadpis=""):
-        if nadpis == "":
-            nadpis = "Sčítání do deseti"
-        super().__init__(10, nadpis)
-
-
-class ScitaniDoDesetiPresPet(ScitaniDoDeseti):
-    def __init__(self):
-        super().__init__("Sčítání do deseti přes pět")
-
-    def over_vysledek(self):
-        return super().over_vysledek() and 6 <= self.c
-
-
-class ScitaniDoplnPrvnihoCinitele(Scitani):
-    def __init__(self, nadpis=""):
-        if nadpis == "":
-            nadpis = "Doplň prvního činitele"
-        super().__init__(nadpis)
-
-    def tisk(self):
-        print("… + %d = %d" % (self.a, self.c))
-
-
-class ScitaniDoplnDruhehoCinitele(Scitani):
-    def __init__(self, nadpis=""):
-        if nadpis == "":
-            nadpis = "Doplň prvního činitele"
-        super().__init__(nadpis)
-
-    def tisk(self):
-        print("%d + … = %d" % (self.a, self.c))
-
-
-class ScitaniDoDesetiDoplnPrvnihoCinitele(ScitaniDoDeseti, ScitaniDoplnPrvnihoCinitele):
-    def __init__(self):
-        super(ScitaniDoDesetiDoplnPrvnihoCinitele, self).__init__("Sčítání do deseti, doplň prvního činitele")
-
-    def tisk(self):
-        ScitaniDoplnPrvnihoCinitele.tisk(self)
-
-
-class ScitaniDoDesetiDoplnDruhehoCinitele(ScitaniDoDeseti, ScitaniDoplnDruhehoCinitele):
-    def __init__(self):
-        super(ScitaniDoDesetiDoplnDruhehoCinitele, self).__init__("Sčítání do deseti, doplň druhého činitele")
-
-    def tisk(self):
-        ScitaniDoplnDruhehoCinitele.tisk(self)
-
-
-# p = ScitaniDo(20)
-# p = ScitaniDoDeseti()
-# p = ScitaniDoDesetiPresPet()
-# p = ScitaniDoDesetiDoplnPrvnihoCinitele()
-# p = ScitaniDoDesetiDoplnDruhehoCinitele()
-# p.vyrob()
-# p.tisk()
-
-
-c = Cviceni(ScitaniDoDeseti, 20)
-c.vyrob()
-c.tisk()
-
-
-class ScitaniDoDvaceti(ScitaniDo):
-    def __init__(self, nadpis=""):
-        super().__init__(20, nadpis)
-
-    def over_vysledek(self):
-        return super().over_vysledek() and 10 <= self.c
-
-
-c = Cviceni(ScitaniDoDvaceti, 20)
-c.vyrob()
-c.tisk()
-
-
-class ScitaniDoDvacetiDoplnPrvnihoCinitele(ScitaniDoDeseti, ScitaniDoplnPrvnihoCinitele):
-    def __init__(self, nadpis=""):
-        super(ScitaniDoDvacetiDoplnPrvnihoCinitele, self).__init__("Sčítání do 10, doplň prvního činitele")
-
-    def tisk(self):
-        ScitaniDoplnPrvnihoCinitele.tisk(self)
-
-
-class ScitaniDoDvacetiDoplnDruhehoCinitele(ScitaniDoDeseti, ScitaniDoplnDruhehoCinitele):
-    def __init__(self, nadpis=""):
-        super(ScitaniDoDvacetiDoplnDruhehoCinitele, self).__init__("Sčítání do 10, doplň druhého činitele")
-
-    def tisk(self):
-        ScitaniDoplnDruhehoCinitele.tisk(self)
-
-
-c = Cviceni(ScitaniDoDvacetiDoplnDruhehoCinitele, 20)
-c.vyrob()
-c.tisk()
-
-c = Cviceni(ScitaniDoDvacetiDoplnPrvnihoCinitele, 20)
-c.vyrob()
-c.tisk()
-
-
-# ====
-
-class Odcitani(Priklad):
-    """
-A - B = C
-    """
-
-    def __init__(self, nadpis=""):
-        if nadpis == "":
-            nadpis = "Odčítání"
-        super().__init__(nadpis)
-
-    def spocitej(self):
-        self.c = self.a - self.b
-
-    def tisk(self):
-        print("%d – %d = …" % (self.a, self.b))
-
-
-class OdcitaniDo(Odcitani):
-    def __init__(self, max, nadpis=""):
-        if nadpis == "":
-            nadpis = "Odčítání do %d" % (max)
-        super().__init__(nadpis)
-        self.max = max
-
-    def vstup_nahodny(self):
-        self.a = randint(0, self.max)
-        self.b = randint(0, self.max)
-
-    def over_vysledek(self):
-        return 0 <= self.c <= self.max
-
-
-class OdcitaniDoDeseti(OdcitaniDo):
-    def __init__(self, nadpis=""):
-        if nadpis == "":
-            nadpis = "Odčítání do deseti"
-        super().__init__(10, nadpis)
 
 
 class OdcitaniDoDesetiOdectiMeneNezPet(OdcitaniDoDeseti):
@@ -410,135 +257,6 @@ class OdcitaniDoDesetiOdectiViceNezPet(OdcitaniDoDeseti):
 
     def over_vysledek(self):
         return super().over_vysledek() and 5 <= self.b
-
-
-class OdcitaniDoplnPrvnihoCinitele(Odcitani):
-    def __init__(self, nadpis=""):
-        if nadpis == "":
-            nadpis = "Doplň prvního činitele"
-        super().__init__(nadpis)
-
-    def tisk(self):
-        print("… – %d = %d" % (self.b, self.c))
-
-
-class OdcitaniDoplnDruhehoCinitele(Odcitani):
-    def __init__(self, nadpis=""):
-        if nadpis == "":
-            nadpis = "Doplň druhého činitele"
-        super().__init__(nadpis)
-
-    def tisk(self):
-        print("%d – … = %d" % (self.a, self.c))
-
-
-class OdcitaniDoDesetiDoplnPrvnihoCinitele(OdcitaniDoDeseti, OdcitaniDoplnPrvnihoCinitele):
-    def __init__(self):
-        super(OdcitaniDoDesetiDoplnPrvnihoCinitele, self).__init__("Odčítání do deseti, doplň prvního činitele")
-
-    def tisk(self):
-        OdcitaniDoplnPrvnihoCinitele.tisk(self)
-
-
-class OdcitaniDoDesetiDoplnDruhehoCinitele(OdcitaniDoDeseti, OdcitaniDoplnDruhehoCinitele):
-    def __init__(self):
-        super(OdcitaniDoDesetiDoplnDruhehoCinitele, self).__init__("Odčítání do deseti, doplň druhého činitele")
-
-    def tisk(self):
-        OdcitaniDoplnDruhehoCinitele.tisk(self)
-
-
-# p = OdcitaniDo(20)
-# p = OdcitaniDoDeseti()
-# p = OdcitaniDoDesetiPresPet()
-# p = OdcitaniDoDesetiDoplnPrvnihoCinitele()
-# p = OdcitaniDoDesetiDoplnDruhehoCinitele()
-# p.vyrob()
-# p.tisk()
-
-
-# c = Cviceni(OdcitaniDoDeseti, 20)
-# c.vyrob()
-# c.tisk()
-
-c = OdcitaniDoDesetiDoplnPrvnihoCinitele()
-c.vyrob()
-c.tisk()
-
-c = OdcitaniDoDesetiDoplnDruhehoCinitele()
-c.vyrob()
-c.tisk()
-
-
-class OdcitaniDoDvaceti(OdcitaniDo):
-    def __init__(self, nadpis=""):
-        super().__init__(20, nadpis)
-
-    def over_vysledek(self):
-        return super().over_vysledek() and 5 <= self.c
-
-
-c = Cviceni(OdcitaniDoDesetiOdectiMeneNezPet, 20)
-c.vyrob()
-c.tisk()
-
-c = Cviceni(OdcitaniDoDesetiOdectiViceNezPet, 20)
-c.vyrob()
-c.tisk()
-
-c = Cviceni(OdcitaniDoDvaceti, 20)
-c.vyrob()
-c.tisk()
-
-
-class ScitaniDoDvacetiDoplnPrvnihoCinitele(ScitaniDoDvaceti, ScitaniDoplnPrvnihoCinitele):
-    def __init__(self, nadpis=""):
-        super(ScitaniDoDvacetiDoplnPrvnihoCinitele, self).__init__("Sčítání do 20, doplň prvního činitele")
-
-    def tisk(self):
-        OdcitaniDoplnPrvnihoCinitele.tisk(self)
-
-
-class OdcitaniDoDvacetiDoplnDruhehoCinitele(ScitaniDoDvaceti, ScitaniDoplnDruhehoCinitele):
-    def __init__(self, nadpis=""):
-        super(ScitaniDoDvacetiDoplnDruhehoCinitele, self).__init__("Sčítání do 20, doplň druhého činitele")
-
-    def tisk(self):
-        OdcitaniDoplnDruhehoCinitele.tisk(self)
-
-
-c = Cviceni(ScitaniDoDvacetiDoplnPrvnihoCinitele, 20)
-c.vyrob()
-c.tisk()
-
-c = Cviceni(ScitaniDoDvacetiDoplnPrvnihoCinitele, 20)
-c.vyrob()
-c.tisk()
-
-
-class OdcitaniDoDvacetiDoplnPrvnihoCinitele(OdcitaniDoDvaceti, OdcitaniDoplnPrvnihoCinitele):
-    def __init__(self, nadpis=""):
-        super(OdcitaniDoDvacetiDoplnPrvnihoCinitele, self).__init__("Odčítání do 20, doplň prvního činitele")
-
-    def tisk(self):
-        OdcitaniDoplnPrvnihoCinitele.tisk(self)
-
-
-class OdcitaniDoDvacetiDoplnDruhehoCinitele(OdcitaniDoDvaceti, OdcitaniDoplnDruhehoCinitele):
-    def __init__(self, nadpis=""):
-        super(OdcitaniDoDvacetiDoplnDruhehoCinitele, self).__init__("Odčítání do 20, doplň druhého činitele")
-
-    def tisk(self):
-        OdcitaniDoplnDruhehoCinitele.tisk(self)
-
-
-c = Cviceni(OdcitaniDoDvacetiDoplnDruhehoCinitele, 20)
-c.vyrob()
-c.tisk()
-
-c = Cviceni(OdcitaniDoDvacetiDoplnPrvnihoCinitele, 20)
-c.vyrob()
-c.tisk()
 
 
 class Posloupnost(Priklad):
