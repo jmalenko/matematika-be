@@ -342,7 +342,7 @@ pro každé i: od <= Ai <= do
         nadpis += " délky %d" % N
         nadpis += ", čísla od %d do %d" % (od, do)
         if neznama != None:
-            nadpis += ", doplň %d. číslo" % neznama
+            nadpis += ", doplň %d. číslo" % (neznama + 1)
         super().__init__(nadpis)
 
         if neznama == None:
