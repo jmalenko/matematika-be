@@ -147,19 +147,27 @@ class ZadaniBinarni(Zadani):
 
     def tisk(self, parametry):
         s = ""
-        s += str(parametry.a) if self.typ is not Operand1 else "…"
+        s += format_cislo(parametry.a, self.typ is not Operand1)
         s += " "
         s += self.op_text
         s += " "
-        s += str(parametry.b) if self.typ is not Operand2 else "…"
+        s += format_cislo(parametry.b, self.typ is not Operand2)
         s += " = "
-        s += str(parametry.c) if self.typ is not Vysledek else "…"
+        s += format_cislo(parametry.c, self.typ is not Vysledek)
         print(s)
 
     def __eq__(self, item):
         if self.__class__ != item.__class__:
             return False
         return True
+
+
+def format_cislo(n, to_fill=False):
+    formatted = ""
+    if n < 0:
+        formatted += "–"
+    formatted += str(abs(n)) if to_fill else "…"
+    return formatted
 
 
 class ParametryBinarni(Parametry):
@@ -371,15 +379,15 @@ pro každé i: od <= Ai <= do
             if i == self.neznama:
                 if i != 0:
                     s += " + "
-                s += "…"
+                s += format_cislo(n, i != self.neznama)
             else:
                 if i == 0:
-                    s += str(n)
+                    s += format_cislo(n, i != self.neznama)
                 else:
                     s += " + " if 0 <= n else " – "
-                    s += str(abs(n))
+                    s += format_cislo(abs(n), i != self.neznama)
         s += " = "
-        s += str(parametry.b) if self.n != self.neznama else "…"
+        s += format_cislo(parametry.b, self.n != self.neznama)
         print(s)
 
     def __eq__(self, item):
