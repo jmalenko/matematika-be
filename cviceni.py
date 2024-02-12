@@ -3,14 +3,14 @@ from random import random, randint
 
 
 class Cviceni:
-    def __init__(self, zadani, pocetPrikladu=10):
+    def __init__(self, zadani, pocet_prikladu=10):
         self.zadani = zadani
-        self.pocetPrikladu = pocetPrikladu
+        self.pocet_prikladu = pocet_prikladu
         self.priklady = []
 
     def vyrob(self):
         dup_zbyva = 100
-        while len(self.priklady) < self.pocetPrikladu:
+        while len(self.priklady) < self.pocet_prikladu:
             priklad = self.zadani.vyrob_priklad()
 
             # Odstranit duplicity
@@ -67,7 +67,7 @@ class Zadani:
                 self.spocitej(parametry)
                 if self.over_vysledek(parametry):
                     break
-            except:
+            except ArithmeticError:
                 continue
         return Priklad(self, parametry)
 
@@ -259,7 +259,7 @@ class ScitaniSeZapornymi(Scitani):
         return super().over_vysledek(parametry)
 
 
-class Clen():
+class Clen:
     pass
 
 
@@ -336,19 +336,19 @@ A0 + A1 + ... + An-1 = B
 pro každé i: od <= Ai <= do
     """
 
-    def __init__(self, N, od, do, neznama=None):
+    def __init__(self, n, od, do, neznama=None):
         # Sestav nadpis
         nadpis = "Posloupnost operací"
-        nadpis += " délky %d" % N
+        nadpis += " délky %d" % n
         nadpis += ", čísla od %d do %d" % (od, do)
-        if neznama != None:
+        if neznama is not None:
             nadpis += ", doplň %d. číslo" % (neznama + 1)
         super().__init__(nadpis)
 
-        if neznama == None:
-            neznama = N
+        if neznama is None:
+            neznama = n
 
-        self.N = N
+        self.n = n
         self.od = od
         self.do = do
         self.neznama = neznama
@@ -356,7 +356,7 @@ pro každé i: od <= Ai <= do
     def vstup_nahodny(self):
         parmametry = ParametryPosl()
         parmametry.a = []
-        for i in range(self.N):
+        for i in range(self.n):
             n = randint(self.od, self.do)
             parmametry.a.append(n)
         return parmametry
@@ -379,13 +379,13 @@ pro každé i: od <= Ai <= do
                     s += " + " if 0 <= n else " – "
                     s += str(abs(n))
         s += " = "
-        s += str(parametry.b) if self.N != self.neznama else "…"
+        s += str(parametry.b) if self.n != self.neznama else "…"
         print(s)
 
     def __eq__(self, item):
         if self.__class__ != item.__class__:
             return False
-        if self.N != item.N:
+        if self.n != item.n:
             return False
         if self.od != item.od:
             return False
@@ -411,38 +411,38 @@ class ParametryPosl(Parametry):
         return True
 
 
-def vytvorPosl(N, od, do, neznama=None, pocet=20):
-    c = Cviceni(Posloupnost(N, od, do, neznama), pocet)
+def vytvor_posl(n, od, do, neznama=None, pocet=20):
+    c = Cviceni(Posloupnost(n, od, do, neznama), pocet)
     c.vyrob()
     c.tisk()
 
 
-vytvorPosl(3, 1, 5)
-vytvorPosl(3, 1, 5, 0)
-vytvorPosl(3, 1, 5, 1)
-vytvorPosl(3, 1, 5, 2)
+vytvor_posl(3, 1, 5)
+vytvor_posl(3, 1, 5, 0)
+vytvor_posl(3, 1, 5, 1)
+vytvor_posl(3, 1, 5, 2)
 
-vytvorPosl(4, 1, 5)
-vytvorPosl(4, 1, 5, 0)
-vytvorPosl(4, 1, 5, 1)
-vytvorPosl(4, 1, 5, 2)
-vytvorPosl(4, 1, 5, 3)
+vytvor_posl(4, 1, 5)
+vytvor_posl(4, 1, 5, 0)
+vytvor_posl(4, 1, 5, 1)
+vytvor_posl(4, 1, 5, 2)
+vytvor_posl(4, 1, 5, 3)
 
 # Vcetne zapornych cisel
 
-vytvorPosl(3, -5, 5)
-vytvorPosl(3, -5, 5, 0)
-vytvorPosl(3, -5, 5, 1)
-vytvorPosl(3, -5, 5, 2)
+vytvor_posl(3, -5, 5)
+vytvor_posl(3, -5, 5, 0)
+vytvor_posl(3, -5, 5, 1)
+vytvor_posl(3, -5, 5, 2)
 
-vytvorPosl(4, -5, 5)
-vytvorPosl(4, -5, 5, 0)
-vytvorPosl(4, -5, 5, 1)
-vytvorPosl(4, -5, 5, 2)
-vytvorPosl(4, -5, 5, 3)
+vytvor_posl(4, -5, 5)
+vytvor_posl(4, -5, 5, 0)
+vytvor_posl(4, -5, 5, 1)
+vytvor_posl(4, -5, 5, 2)
+vytvor_posl(4, -5, 5, 3)
 
 # Velka cisla
-vytvorPosl(3, -20, 20)
-vytvorPosl(3, -20, 20, 0)
-vytvorPosl(3, -20, 20, 1)
-vytvorPosl(3, -20, 20, 2)
+vytvor_posl(3, -20, 20)
+vytvor_posl(3, -20, 20, 0)
+vytvor_posl(3, -20, 20, 1)
+vytvor_posl(3, -20, 20, 2)
