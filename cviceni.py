@@ -164,9 +164,12 @@ class ZadaniBinarni(Zadani):
 
 def format_cislo(n, to_fill=False):
     formatted = ""
-    if n < 0:
-        formatted += "–"
-    formatted += str(abs(n)) if to_fill else "…"
+    if to_fill:
+        if n < 0:
+            formatted += "–"
+        formatted += str(abs(n))
+    else:
+        formatted += "…"
     return formatted
 
 
