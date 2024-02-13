@@ -9,7 +9,7 @@ class Cviceni:
         self.priklady = []
 
     def vyrob(self):
-        dup_zbyva = 100
+        dup_zbyva = 10000
         while len(self.priklady) < self.pocet_prikladu:
             priklad = self.zadani.vyrob_priklad()
 
@@ -127,8 +127,8 @@ class ZadaniBinarni(Zadani):
         return self.trivialni(parametry) or self.jednoduche(parametry)
 
     def trivialni(self, parametry):
-        if self.do <= 10:
-            return False
+        # if self.do <= 10:
+        #     return False
         if parametry.a in [0, 1]:
             return True
         if parametry.b in [0, 1]:
@@ -138,8 +138,8 @@ class ZadaniBinarni(Zadani):
         return False
 
     def jednoduche(self, parametry):
-        if self.do <= 20:
-            return False
+        # if self.do <= 20:
+        #     return False
         hranice = 0.6 * self.do
         if parametry.a < hranice and parametry.b < hranice and parametry.c < hranice:
             return True
