@@ -345,13 +345,15 @@ class Posloupnost(Zadani):
     """
 A0 + A1 + ... + An-1 = B
 pro každé i: od <= Ai <= do
+a od <= B <= do
     """
 
     def __init__(self, n, od, do, neznama=None):
         # Sestav nadpis
         nadpis = "Posloupnost operací"
         nadpis += " délky %d" % n
-        nadpis += ", čísla od %d do %d" % (od, do)
+        # nadpis += ", čísla od %d do %d" % (od, do)
+        nadpis += ", čísla do %d" % (do)
         if neznama is not None:
             nadpis += ", doplň %d. číslo" % (neznama + 1)
         super().__init__(nadpis)
@@ -369,11 +371,24 @@ pro každé i: od <= Ai <= do
         parmametry.a = []
         for i in range(self.n):
             n = randint(self.od, self.do)
+            if randint(0, 1) == 0:
+                n = -n
             parmametry.a.append(n)
         return parmametry
 
     def spocitej(self, parametry):
         parametry.b = functools.reduce(lambda x, y: x + y, parametry.a)
+
+    def over_vysledek(self, parametry):
+        # Vysledek musi byt s povolenem rozssahu
+        if not (self.od <= parametry.b <= self.do): return False
+        # Prubezne vysledky musi byt kladne a v rozsahu
+        sum = 0
+        for a in parametry.a:
+            sum += a
+            if not (0 < sum): return False
+            if not (self.od <= sum <= self.do): return False
+        return True
 
     def tisk(self, parametry):
         s = ""
@@ -453,7 +468,20 @@ vytvor_posl(4, -5, 5, 2)
 vytvor_posl(4, -5, 5, 3)
 
 # Velka cisla
-vytvor_posl(3, -20, 20)
-vytvor_posl(3, -20, 20, 0)
-vytvor_posl(3, -20, 20, 1)
-vytvor_posl(3, -20, 20, 2)
+vytvor_posl(3, 7, 20)
+vytvor_posl(3, 7, 20, 0)
+vytvor_posl(3, 7, 20, 1)
+vytvor_posl(3, 7, 20, 2)
+
+# Zaporna cisla
+
+# vytvor_posl(3, -5, 5)
+# vytvor_posl(3, -5, 5, 0)
+# vytvor_posl(3, -5, 5, 1)
+# vytvor_posl(3, -5, 5, 2)
+#
+# vytvor_posl(4, -5, 5)
+# vytvor_posl(4, -5, 5, 0)
+# vytvor_posl(4, -5, 5, 1)
+# vytvor_posl(4, -5, 5, 2)
+# vytvor_posl(4, -5, 5, 3)
