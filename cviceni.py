@@ -454,19 +454,6 @@ vytvor_posl(4, 1, 5, 1)
 vytvor_posl(4, 1, 5, 2)
 vytvor_posl(4, 1, 5, 3)
 
-# Vcetne zapornych cisel
-
-vytvor_posl(3, -5, 5)
-vytvor_posl(3, -5, 5, 0)
-vytvor_posl(3, -5, 5, 1)
-vytvor_posl(3, -5, 5, 2)
-
-vytvor_posl(4, -5, 5)
-vytvor_posl(4, -5, 5, 0)
-vytvor_posl(4, -5, 5, 1)
-vytvor_posl(4, -5, 5, 2)
-vytvor_posl(4, -5, 5, 3)
-
 # Velka cisla
 vytvor_posl(3, 7, 20)
 vytvor_posl(3, 7, 20, 0)
