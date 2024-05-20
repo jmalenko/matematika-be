@@ -396,7 +396,7 @@ a od <= B <= do
             n = parametry.a[i]
             if i == self.neznama:
                 if i != 0:
-                    s += " + "
+                    s += " + " if 0 <= n else " – "
                 s += format_cislo(n, i != self.neznama)
             else:
                 if i == 0:
