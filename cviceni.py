@@ -2,6 +2,14 @@ import functools
 from random import random, randint
 
 
+def inicializace():
+    import sys
+    import random
+    seed_value = randint(0, sys.maxsize)
+    # seed_value = ...
+    print("Random seed = %d" % (seed_value))
+    random.seed(seed_value)
+
 class Cviceni:
     def __init__(self, zadani, pocet_prikladu=10):
         self.zadani = zadani
@@ -308,6 +316,7 @@ def ciselna_osa_svisle():
     print(osa, end="")
 
 
+inicializace()
 ciselna_osa_svisle()
 
 vytvor2(Scitani, 1, 5)
