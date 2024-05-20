@@ -452,6 +452,8 @@ def vytvor_posl(n, od, do, neznama=None, pocet=20):
     c.tisk()
 
 
+# Dlouha posloupnost
+
 vytvor_posl(3, 1, 5)
 vytvor_posl(3, 1, 5, 0)
 vytvor_posl(3, 1, 5, 1)
@@ -464,6 +466,14 @@ vytvor_posl(4, 1, 5, 2)
 vytvor_posl(4, 1, 5, 3)
 
 # Velka cisla
+vytvor_posl(2, 7, 15)
+vytvor_posl(2, 7, 15, 0)
+vytvor_posl(2, 7, 15, 1)
+
+vytvor_posl(2, 7, 20)
+vytvor_posl(2, 7, 20, 0)
+vytvor_posl(2, 7, 20, 1)
+
 vytvor_posl(3, 7, 20)
 vytvor_posl(3, 7, 20, 0)
 vytvor_posl(3, 7, 20, 1)
