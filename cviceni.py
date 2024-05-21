@@ -466,18 +466,22 @@ vytvor_posl(4, 1, 5, 2)
 vytvor_posl(4, 1, 5, 3)
 
 # Velka cisla
-vytvor_posl(2, 7, 15)
-vytvor_posl(2, 7, 15, 0)
-vytvor_posl(2, 7, 15, 1)
+do = 15
+od = do // 3
+vytvor_posl(2, od, do)
+vytvor_posl(2, od, do, 0)
+vytvor_posl(2, od, do, 1)
 
-vytvor_posl(2, 7, 20)
-vytvor_posl(2, 7, 20, 0)
-vytvor_posl(2, 7, 20, 1)
+do = 20
+od = do // 3
+vytvor_posl(2, od, do)
+vytvor_posl(2, od, do, 0)
+vytvor_posl(2, od, do, 1)
 
-vytvor_posl(3, 7, 20)
-vytvor_posl(3, 7, 20, 0)
-vytvor_posl(3, 7, 20, 1)
-vytvor_posl(3, 7, 20, 2)
+vytvor_posl(3, od, do)
+vytvor_posl(3, od, do, 0)
+vytvor_posl(3, od, do, 1)
+vytvor_posl(3, od, do, 2)
 
 # Zaporna cisla
 
