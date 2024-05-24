@@ -361,8 +361,7 @@ a od <= B <= do
         # Sestav nadpis
         nadpis = "Posloupnost operací"
         nadpis += " délky %d" % n
-        # nadpis += ", čísla od %d do %d" % (od, do)
-        nadpis += ", čísla do %d" % (do)
+        nadpis += ", čísla od %d do %d" % (od, do)
         if neznama is not None:
             nadpis += ", doplň %d. číslo" % (neznama + 1)
         super().__init__(nadpis)
