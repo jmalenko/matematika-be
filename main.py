@@ -21,20 +21,10 @@ app.add_middleware(
 )
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
 @app.get("/test")
 def read_test():
     a = random.randrange(80)
     return {"zadani": [a, "+", 2, "=", a + 2], "neznama": 2}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
-
 
 @app.get("/matematika")
 def read_matematika():
