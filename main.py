@@ -3,6 +3,9 @@ from typing import Union
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+import random
+import matematika
+
 app = FastAPI()
 
 origins = [
@@ -22,6 +25,11 @@ app.add_middleware(
 def read_root():
     return {"Hello": "World"}
 
+@app.get("/test")
+def read_test():
+    a = random.randrange(80)
+    return {"zadani": [a, "+", 2, "=", a + 2], "neznama": 2}
+
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):
@@ -30,4 +38,7 @@ def read_item(item_id: int, q: Union[str, None] = None):
 
 @app.get("/matematika")
 def read_matematika():
-    return {"zadani": [1, "+", 2, "=", "3"], "neznama": 2}
+    c = matematika.Cviceni(matematika.Scitani(6, 20, matematika.Vysledek), 1)
+    c.vyrob()
+    priklad = c.priklady[0]
+    return {"zadani": [priklad.parametry.a, priklad.zadani.op_text, priklad.parametry.b, "=", priklad.parametry.c], "neznama": 2}
