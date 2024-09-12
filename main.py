@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 import random
-import matematika
+import cviceni
 
 app = FastAPI()
 
@@ -28,7 +28,7 @@ def read_test():
 
 @app.get("/matematika")
 def read_matematika():
-    c = matematika.Cviceni(matematika.Scitani(6, 20, matematika.Vysledek), 1)
+    c = cviceni.Cviceni(cviceni.Scitani(6, 20, cviceni.Vysledek), 1)
     c.vyrob()
     priklad = c.priklady[0]
     return {"zadani": [priklad.parametry.a, priklad.zadani.op_text, priklad.parametry.b, "=", priklad.parametry.c], "neznama": 2}
