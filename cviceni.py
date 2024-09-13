@@ -411,6 +411,7 @@ class ParametryPosl(Parametry):
         return True
 
 
+
 def vytvor_posl(n, od, do, neznama=None, pocet=20):
     c = Cviceni(Posloupnost(n, od, do, neznama), pocet)
     c.vyrob()
@@ -453,16 +454,16 @@ if __name__ == "__main__":
 
     # Dlouha posloupnost
 
-    # vytvor_posl(3, 1, 5)
-    # vytvor_posl(3, 1, 5, 0)
-    # vytvor_posl(3, 1, 5, 1)
-    # vytvor_posl(3, 1, 5, 2)
-    #
-    # vytvor_posl(4, 1, 5)
-    # vytvor_posl(4, 1, 5, 0)
-    # vytvor_posl(4, 1, 5, 1)
-    # vytvor_posl(4, 1, 5, 2)
-    # vytvor_posl(4, 1, 5, 3)
+    vytvor_posl(3, 1, 5)
+    vytvor_posl(3, 1, 5, 0)
+    vytvor_posl(3, 1, 5, 1)
+    vytvor_posl(3, 1, 5, 2)
+
+    vytvor_posl(4, 1, 5)
+    vytvor_posl(4, 1, 5, 0)
+    vytvor_posl(4, 1, 5, 1)
+    vytvor_posl(4, 1, 5, 2)
+    vytvor_posl(4, 1, 5, 3)
 
     # Velka cisla
     do = 20
@@ -478,13 +479,13 @@ if __name__ == "__main__":
 
     # Zaporna cisla
 
-    # vytvor_posl(3, -5, 5)
-    # vytvor_posl(3, -5, 5, 0)
-    # vytvor_posl(3, -5, 5, 1)
-    # vytvor_posl(3, -5, 5, 2)
-    #
-    # vytvor_posl(4, -5, 5)
-    # vytvor_posl(4, -5, 5, 0)
-    # vytvor_posl(4, -5, 5, 1)
-    # vytvor_posl(4, -5, 5, 2)
-    # vytvor_posl(4, -5, 5, 3)
+    vytvor_posl(3, -5, 5)
+    vytvor_posl(3, -5, 5, 0)
+    vytvor_posl(3, -5, 5, 1)
+    vytvor_posl(3, -5, 5, 2)
+
+    vytvor_posl(4, -5, 5)
+    vytvor_posl(4, -5, 5, 0)
+    vytvor_posl(4, -5, 5, 1)
+    vytvor_posl(4, -5, 5, 2)
+    vytvor_posl(4, -5, 5, 3)
