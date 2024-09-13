@@ -316,40 +316,6 @@ def ciselna_osa_svisle():
     print(osa, end="")
 
 
-inicializace()
-ciselna_osa_svisle()
-
-vytvor2(Scitani, 1, 5)
-vytvor2(Scitani, 1, 10)
-vytvor(Scitani, 10)
-
-vytvor(OdcitaniOdectiMeneNezPet, 10)
-vytvor(OdcitaniOdectiViceNezPet, 10)
-
-vytvor2(OdcitaniSeZapornymi, -10, 10)
-vytvor2(ScitaniSeZapornymi, -10, 10)
-
-for do in [10, 13, 20, 30, 50]:
-    vytvor(Scitani, do)
-    vytvor(Scitani, do, Operand1)
-    vytvor(Scitani, do, Operand2)
-
-    vytvor(Odcitani, do)
-    vytvor(Odcitani, do, Operand1)
-    vytvor(Odcitani, do, Operand2)
-
-    if do % 10 != 0:  # Priklady na nasobeni a deleni nepotrebuji mezikroky
-        continue
-
-    vytvor(Nasobeni, do)
-    vytvor(Nasobeni, do, Operand1)
-    vytvor(Nasobeni, do, Operand2)
-
-    vytvor(Deleni, do)
-    vytvor(Deleni, do, Operand1)
-    vytvor(Deleni, do, Operand2)
-
-
 class Posloupnost(Zadani):
     """
 A0 + A1 + ... + An-1 = B
@@ -451,46 +417,74 @@ def vytvor_posl(n, od, do, neznama=None, pocet=20):
     c.tisk()
 
 
-# Dlouha posloupnost
+if __name__ == "__main__":
+    inicializace()
+    ciselna_osa_svisle()
 
-vytvor_posl(3, 1, 5)
-vytvor_posl(3, 1, 5, 0)
-vytvor_posl(3, 1, 5, 1)
-vytvor_posl(3, 1, 5, 2)
+    vytvor2(Scitani, 1, 5)
+    vytvor2(Scitani, 1, 10)
+    vytvor(Scitani, 10)
 
-vytvor_posl(4, 1, 5)
-vytvor_posl(4, 1, 5, 0)
-vytvor_posl(4, 1, 5, 1)
-vytvor_posl(4, 1, 5, 2)
-vytvor_posl(4, 1, 5, 3)
+    vytvor(OdcitaniOdectiMeneNezPet, 10)
+    vytvor(OdcitaniOdectiViceNezPet, 10)
 
-# Velka cisla
-do = 15
-od = do // 3
-vytvor_posl(2, od, do)
-vytvor_posl(2, od, do, 0)
-vytvor_posl(2, od, do, 1)
+    vytvor2(OdcitaniSeZapornymi, -10, 10)
+    vytvor2(ScitaniSeZapornymi, -10, 10)
 
-do = 20
-od = do // 3
-vytvor_posl(2, od, do)
-vytvor_posl(2, od, do, 0)
-vytvor_posl(2, od, do, 1)
+    for do in [10, 13, 20, 30, 50]:
+        vytvor(Scitani, do)
+        vytvor(Scitani, do, Operand1)
+        vytvor(Scitani, do, Operand2)
 
-vytvor_posl(3, od, do)
-vytvor_posl(3, od, do, 0)
-vytvor_posl(3, od, do, 1)
-vytvor_posl(3, od, do, 2)
+        vytvor(Odcitani, do)
+        vytvor(Odcitani, do, Operand1)
+        vytvor(Odcitani, do, Operand2)
 
-# Zaporna cisla
+        if do % 10 != 0:  # Priklady na nasobeni a deleni nepotrebuji mezikroky
+            continue
 
-# vytvor_posl(3, -5, 5)
-# vytvor_posl(3, -5, 5, 0)
-# vytvor_posl(3, -5, 5, 1)
-# vytvor_posl(3, -5, 5, 2)
-#
-# vytvor_posl(4, -5, 5)
-# vytvor_posl(4, -5, 5, 0)
-# vytvor_posl(4, -5, 5, 1)
-# vytvor_posl(4, -5, 5, 2)
-# vytvor_posl(4, -5, 5, 3)
+        vytvor(Nasobeni, do)
+        vytvor(Nasobeni, do, Operand1)
+        vytvor(Nasobeni, do, Operand2)
+
+        vytvor(Deleni, do)
+        vytvor(Deleni, do, Operand1)
+        vytvor(Deleni, do, Operand2)
+
+    # Dlouha posloupnost
+
+    # vytvor_posl(3, 1, 5)
+    # vytvor_posl(3, 1, 5, 0)
+    # vytvor_posl(3, 1, 5, 1)
+    # vytvor_posl(3, 1, 5, 2)
+    #
+    # vytvor_posl(4, 1, 5)
+    # vytvor_posl(4, 1, 5, 0)
+    # vytvor_posl(4, 1, 5, 1)
+    # vytvor_posl(4, 1, 5, 2)
+    # vytvor_posl(4, 1, 5, 3)
+
+    # Velka cisla
+    do = 20
+    od = do // 3
+    vytvor_posl(2, od, do)
+    vytvor_posl(2, od, do, 1)
+    vytvor_posl(2, od, do, 0)
+
+    vytvor_posl(3, od, do)
+    vytvor_posl(3, od, do, 2)
+    vytvor_posl(3, od, do, 1)
+    vytvor_posl(3, od, do, 0)
+
+    # Zaporna cisla
+
+    # vytvor_posl(3, -5, 5)
+    # vytvor_posl(3, -5, 5, 0)
+    # vytvor_posl(3, -5, 5, 1)
+    # vytvor_posl(3, -5, 5, 2)
+    #
+    # vytvor_posl(4, -5, 5)
+    # vytvor_posl(4, -5, 5, 0)
+    # vytvor_posl(4, -5, 5, 1)
+    # vytvor_posl(4, -5, 5, 2)
+    # vytvor_posl(4, -5, 5, 3)
