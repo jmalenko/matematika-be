@@ -1,4 +1,5 @@
 import functools
+from pprint import pprint
 from random import random, randint
 
 
@@ -102,8 +103,8 @@ class ZadaniBinarni(Zadani):
     def __init__(self, od, do, typ):
         # Sestav nadpis
         nadpis = self.nadpis
-        if do <= 10:
-            if od != 0:
+        if do < 10:
+            if od != 1:
                 nadpis += " od %d" % od
         nadpis += " do %d" % do
         if typ.nadpis != "":
@@ -130,7 +131,7 @@ class ZadaniBinarni(Zadani):
 
     def nezajimave(self, parametry):
         # Nezajimave prametry jsou:
-        # 1) trivialni nebo
+        # 1) trivialni (tj. 0 nebo 1) nebo
         # 2) jednoduche (nedostatecne velka cisla)
         return self.trivialni(parametry) or self.jednoduche(parametry)
 
@@ -418,6 +419,70 @@ def vytvor_posl(n, od, do, neznama=None, pocet=20):
     c.tisk()
 
 
+class Lekce:
+    def vsechna_zadani(self):
+        vsechna_zadani = []
+
+        for do in range(5, 20 + 1):
+            od = 1 if do < 10 else 0
+            vsechna_zadani.append(
+                lambda od=od, do=do: Scitani(od, do, Vysledek))  # Trick, force the lambda parameters to instantiate
+            vsechna_zadani.append(lambda od=od, do=do: Scitani(od, do, Operand2))
+            vsechna_zadani.append(lambda od=od, do=do: Scitani(od, do, Operand1))
+
+            vsechna_zadani.append(lambda od=od, do=do: Odcitani(od, do, Vysledek))
+            vsechna_zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand2))
+            vsechna_zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand1))
+
+            # TODO random on execution
+            # Mix
+            # neznama = randint(1, 3)
+            # if neznama == 3: neznama = None
+            # vsechna_zadani.append(lambda od=od, do=do, neznama=neznama: Posloupnost(2, od, do, neznama))
+
+            # Nula
+            if do == 9:
+                od = 0
+                vsechna_zadani.append(lambda od=od, do=do: Scitani(od, do, Vysledek))
+                vsechna_zadani.append(lambda od=od, do=do: Scitani(od, do, Operand2))
+                vsechna_zadani.append(lambda od=od, do=do: Scitani(od, do, Operand1))
+
+                vsechna_zadani.append(lambda od=od, do=do: Odcitani(od, do, Vysledek))
+                vsechna_zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand2))
+                vsechna_zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand1))
+
+        # TODO front end
+        # Delsi posloupnosti
+        # do = 20
+        # od = do // 3
+        # vsechna_zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, None))
+        # vsechna_zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, 2))
+        # vsechna_zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, 1))
+        # vsechna_zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, 0))
+        #
+        # vsechna_zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, None))
+        # vsechna_zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 3))
+        # vsechna_zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 2))
+        # vsechna_zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 1))
+        # vsechna_zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 0))
+
+        return vsechna_zadani
+
+    def seznam(self):
+
+        lekceIds = [[i + 1, lekce1().nadpis] for i, lekce1 in enumerate(self.vsechna_zadani())]
+        return list(lekceIds)
+
+    def get_zadani(self, id):
+        i = id - 1
+        zadani = self.vsechna_zadani()[i]()
+        return zadani
+
+    def get_priklad(self, id):
+        zadani = self.get_zadani(id)
+        priklad = zadani.vyrob_priklad()
+        return priklad
+
 if __name__ == "__main__":
     inicializace()
     ciselna_osa_svisle()
@@ -489,3 +554,11 @@ if __name__ == "__main__":
     vytvor_posl(4, -5, 5, 1)
     vytvor_posl(4, -5, 5, 2)
     vytvor_posl(4, -5, 5, 3)
+
+    # Lekce
+    seznam = Lekce().seznam()
+    for polozka_seznamu in seznam:
+        pprint(polozka_seznamu)
+        id = polozka_seznamu[0]
+        priklad = Lekce().get_priklad(id)
+        priklad.tisk()
