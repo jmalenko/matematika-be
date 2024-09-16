@@ -1,5 +1,4 @@
 import functools
-from pprint import pprint
 from random import random, randint
 
 
@@ -469,9 +468,12 @@ class Lekce:
         return vsechna_zadani
 
     def seznam(self):
-
-        lekceIds = [[i + 1, lekce1().nadpis] for i, lekce1 in enumerate(self.vsechna_zadani())]
-        return list(lekceIds)
+        seznam = {}
+        id = 1
+        for zadani1 in self.vsechna_zadani():
+            seznam[id] = zadani1().nadpis
+            id += 1
+        return seznam
 
     def get_zadani(self, id):
         i = id - 1
@@ -557,8 +559,7 @@ if __name__ == "__main__":
 
     # Lekce
     seznam = Lekce().seznam()
-    for polozka_seznamu in seznam:
-        pprint(polozka_seznamu)
-        id = polozka_seznamu[0]
+    for id, nazev in seznam.items():
+        print("%d: %s" % (id, nazev))
         priklad = Lekce().get_priklad(id)
         priklad.tisk()
