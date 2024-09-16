@@ -235,7 +235,7 @@ class ScitaniOdcitaniVse(ZadaniBinarni):
             case 6:
                 zadani = lambda od=self.od, do=self.do: Odcitani(od, do, Operand1)
             case _:
-                raise ValueError('Logical error')
+                raise ValueError('Unsupported branch ' + volba)
         return zadani().vyrob_priklad()
 
 
@@ -511,20 +511,19 @@ class Lekce:
                 zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand2))
                 zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand1))
 
-        # TODO front end
-        # Delsi posloupnosti
-        # do = 20
-        # od = do // 3
-        # zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, None))
-        # zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, 2))
-        # zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, 1))
-        # zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, 0))
-        #
-        # zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, None))
-        # zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 3))
-        # zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 2))
-        # zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 1))
-        # zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 0))
+        # Více operandů
+        do = 20
+        od = do // 3
+        zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, None))
+        zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, 2))
+        zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, 1))
+        zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, 0))
+
+        zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, None))
+        zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 3))
+        zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 2))
+        zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 1))
+        zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 0))
 
         return zadani
 
@@ -539,8 +538,6 @@ class Lekce:
             zadani.append(lambda n=n: Deleni(n, Vysledek))
             zadani.append(lambda n=n: Deleni(n, Operand2))
             zadani.append(lambda n=n: Deleni(n, Operand1))
-
-        # TODO mix
 
         return zadani
 
