@@ -213,6 +213,32 @@ class Odcitani(ZadaniBinarni):
         parametry.c = parametry.a - parametry.b
 
 
+class ScitaniOdcitaniVse(ZadaniBinarni):
+    def __init__(self, od, do):
+        self.nadpis = "Sčítání a odčítání do %d" % do
+        self.od = od
+        self.do = do
+
+    def vyrob_priklad(self):
+        volba = randint(1, 6)
+        match volba:
+            case 1:
+                zadani = lambda od=self.od, do=self.do: Scitani(od, do, Vysledek)
+            case 2:
+                zadani = lambda od=self.od, do=self.do: Scitani(od, do, Operand2)
+            case 3:
+                zadani = lambda od=self.od, do=self.do: Scitani(od, do, Operand1)
+            case 4:
+                zadani = lambda od=self.od, do=self.do: Odcitani(od, do, Vysledek)
+            case 5:
+                zadani = lambda od=self.od, do=self.do: Odcitani(od, do, Operand2)
+            case 6:
+                zadani = lambda od=self.od, do=self.do: Odcitani(od, do, Operand1)
+            case _:
+                raise ValueError('Logical error')
+        return zadani().vyrob_priklad()
+
+
 class ZadaniNasobeniDeleni(ZadaniBinarni):
     def __init__(self, n, typ):
         # Sestav nadpis
@@ -472,11 +498,7 @@ class Lekce:
             zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand2))
             zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand1))
 
-            # TODO random on execution
-            # Mix
-            # neznama = randint(1, 3)
-            # if neznama == 3: neznama = None
-            # zadani.append(lambda od=od, do=do, neznama=neznama: Posloupnost(2, od, do, neznama))
+            zadani.append(lambda od=od, do=do: ScitaniOdcitaniVse(od, do))
 
             # Nula
             if do == 9:
