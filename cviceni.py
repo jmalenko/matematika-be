@@ -10,6 +10,7 @@ def inicializace():
     print("Random seed = %d" % (seed_value))
     random.seed(seed_value)
 
+
 class Cviceni:
     def __init__(self, zadani, pocet_prikladu=10):
         self.zadani = zadani
@@ -212,7 +213,37 @@ class Odcitani(ZadaniBinarni):
         parametry.c = parametry.a - parametry.b
 
 
-class Nasobeni(ZadaniBinarni):
+class ZadaniNasobeniDeleni(ZadaniBinarni):
+    def __init__(self, n, typ):
+        # Sestav nadpis
+        nadpis = self.nadpis
+        nadpis += ", číslo %d" % n
+        if typ.nadpis != "":
+            nadpis += ", %s" % typ.nadpis
+        # super().__init__(nadpis)
+        self.nadpis = nadpis
+
+        self.n = n
+        self.typ = typ
+
+    def vstup_nahodny(self):
+        parmametry = ParametryBinarni()
+        # if self.typ == Operand2:
+        parmametry.a = self.n
+        parmametry.b = randint(0, 10)
+        # Swap
+        if self.typ == Operand1 or (self.typ == Vysledek and randint(0, 1) == 0):
+            parmametry.a, parmametry.b = parmametry.b, parmametry.a
+        return parmametry
+
+    def over_vysledek(self, parametry):
+        return True
+
+    def jednoduche(self, parametry):
+        return False
+
+
+class Nasobeni(ZadaniNasobeniDeleni):
     nadpis = "Násobení"
     op_text = "·"
 
@@ -220,7 +251,7 @@ class Nasobeni(ZadaniBinarni):
         parametry.c = parametry.a * parametry.b
 
 
-class Deleni(ZadaniBinarni):
+class Deleni(ZadaniNasobeniDeleni):
     nadpis = "Dělení"
     op_text = ":"
 
@@ -411,79 +442,116 @@ class ParametryPosl(Parametry):
         return True
 
 
-
 def vytvor_posl(n, od, do, neznama=None, pocet=20):
     c = Cviceni(Posloupnost(n, od, do, neznama), pocet)
     c.vyrob()
     c.tisk()
 
 
+class Tridy:
+    def seznam(self):
+        tridy = {
+            1: "1. třída",
+            2: "2. třída",
+        }
+        return tridy
+
+
 class Lekce:
-    def vsechna_zadani(self):
-        vsechna_zadani = []
+    def zadani_1_trida(self):
+        zadani = []
 
         for do in range(5, 20 + 1):
             od = 1 if do < 10 else 0
-            vsechna_zadani.append(
+            zadani.append(
                 lambda od=od, do=do: Scitani(od, do, Vysledek))  # Trick, force the lambda parameters to instantiate
-            vsechna_zadani.append(lambda od=od, do=do: Scitani(od, do, Operand2))
-            vsechna_zadani.append(lambda od=od, do=do: Scitani(od, do, Operand1))
+            zadani.append(lambda od=od, do=do: Scitani(od, do, Operand2))
+            zadani.append(lambda od=od, do=do: Scitani(od, do, Operand1))
 
-            vsechna_zadani.append(lambda od=od, do=do: Odcitani(od, do, Vysledek))
-            vsechna_zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand2))
-            vsechna_zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand1))
+            zadani.append(lambda od=od, do=do: Odcitani(od, do, Vysledek))
+            zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand2))
+            zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand1))
 
             # TODO random on execution
             # Mix
             # neznama = randint(1, 3)
             # if neznama == 3: neznama = None
-            # vsechna_zadani.append(lambda od=od, do=do, neznama=neznama: Posloupnost(2, od, do, neznama))
+            # zadani.append(lambda od=od, do=do, neznama=neznama: Posloupnost(2, od, do, neznama))
 
             # Nula
             if do == 9:
                 od = 0
-                vsechna_zadani.append(lambda od=od, do=do: Scitani(od, do, Vysledek))
-                vsechna_zadani.append(lambda od=od, do=do: Scitani(od, do, Operand2))
-                vsechna_zadani.append(lambda od=od, do=do: Scitani(od, do, Operand1))
+                zadani.append(lambda od=od, do=do: Scitani(od, do, Vysledek))
+                zadani.append(lambda od=od, do=do: Scitani(od, do, Operand2))
+                zadani.append(lambda od=od, do=do: Scitani(od, do, Operand1))
 
-                vsechna_zadani.append(lambda od=od, do=do: Odcitani(od, do, Vysledek))
-                vsechna_zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand2))
-                vsechna_zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand1))
+                zadani.append(lambda od=od, do=do: Odcitani(od, do, Vysledek))
+                zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand2))
+                zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand1))
 
         # TODO front end
         # Delsi posloupnosti
         # do = 20
         # od = do // 3
-        # vsechna_zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, None))
-        # vsechna_zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, 2))
-        # vsechna_zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, 1))
-        # vsechna_zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, 0))
+        # zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, None))
+        # zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, 2))
+        # zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, 1))
+        # zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, 0))
         #
-        # vsechna_zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, None))
-        # vsechna_zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 3))
-        # vsechna_zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 2))
-        # vsechna_zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 1))
-        # vsechna_zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 0))
+        # zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, None))
+        # zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 3))
+        # zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 2))
+        # zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 1))
+        # zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 0))
 
-        return vsechna_zadani
+        return zadani
 
-    def seznam(self):
+    def zadani_2_trida(self):
+        zadani = []
+
+        for n in range(2, 10 + 1):
+            zadani.append(lambda n=n: Nasobeni(n, Vysledek))
+            zadani.append(lambda n=n: Nasobeni(n, Operand2))
+            zadani.append(lambda n=n: Nasobeni(n, Operand1))
+
+            zadani.append(lambda n=n: Deleni(n, Vysledek))
+            zadani.append(lambda n=n: Deleni(n, Operand2))
+            zadani.append(lambda n=n: Deleni(n, Operand1))
+
+        # TODO mix
+
+        return zadani
+
+    def seznam_zadani(self, id_trida):
+        match id_trida:
+            case 1:
+                zadani = self.zadani_1_trida()
+            case 2:
+                zadani = self.zadani_2_trida()
+            case _:
+                raise ValueError('Unsupported id_trida ' + id_trida)
+        return zadani
+
+    def seznam(self, id_trida):
+        zadani = self.seznam_zadani(id_trida)
         seznam = {}
         id = 1
-        for zadani1 in self.vsechna_zadani():
+        for zadani1 in zadani:
             seznam[id] = zadani1().nadpis
             id += 1
         return seznam
 
-    def get_zadani(self, id):
-        i = id - 1
-        zadani = self.vsechna_zadani()[i]()
+    def get_zadani(self, id_trida, id_cviceni):
+        zadani_pro_tridu = self.seznam_zadani(id_trida)
+        zadani1 = zadani_pro_tridu[id_cviceni - 1]
+        zadani = zadani1()
         return zadani
 
-    def get_priklad(self, id):
-        zadani = self.get_zadani(id)
+    def get_priklad(self, id_trida, id_cviceni):
+        zadani = self.get_zadani(id_trida, id_cviceni)
         priklad = zadani.vyrob_priklad()
         return priklad
+
 
 if __name__ == "__main__":
     inicializace()
@@ -511,13 +579,13 @@ if __name__ == "__main__":
         if do % 10 != 0:  # Priklady na nasobeni a deleni nepotrebuji mezikroky
             continue
 
-        vytvor(Nasobeni, do)
-        vytvor(Nasobeni, do, Operand1)
-        vytvor(Nasobeni, do, Operand2)
-
-        vytvor(Deleni, do)
-        vytvor(Deleni, do, Operand1)
-        vytvor(Deleni, do, Operand2)
+        # vytvor(Nasobeni, do)
+        # vytvor(Nasobeni, do, Operand1)
+        # vytvor(Nasobeni, do, Operand2)
+        #
+        # vytvor(Deleni, do)
+        # vytvor(Deleni, do, Operand1)
+        # vytvor(Deleni, do, Operand2)
 
     # Dlouha posloupnost
 
@@ -558,8 +626,11 @@ if __name__ == "__main__":
     vytvor_posl(4, -5, 5, 3)
 
     # Lekce
-    seznam = Lekce().seznam()
-    for id, nazev in seznam.items():
-        print("%d: %s" % (id, nazev))
-        priklad = Lekce().get_priklad(id)
-        priklad.tisk()
+    tridy = Tridy().seznam()
+    for id_trida, nazev_trida in tridy.items():
+        # print("%d: %s" % (id_trida, nazev_trida))
+        seznam = Lekce().seznam(id_trida)
+        for id_zadani, nazev_zadani in seznam.items():
+            print("%s, cvičení %d: %s" % (nazev_trida, id_zadani, nazev_zadani))
+            priklad = Lekce().get_priklad(id_trida, id_zadani)
+            priklad.tisk()
