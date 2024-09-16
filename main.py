@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 import random
-import cviceni
+from cviceni import Lekce, Operand1, Operand2, Vysledek
 
 app = FastAPI()
 
@@ -23,12 +23,16 @@ app.add_middleware(
 
 @app.get("/test")
 def read_test():
-    a = random.randrange(80)
-    return {"zadani": [a, "+", 2, "=", a + 2], "neznama": 2}
+    return {"zadani": [1, "+", 2, "=", 3], "neznama": 4}
 
-@app.get("/matematika")
-def read_matematika():
-    c = cviceni.Cviceni(cviceni.Scitani(6, 20, cviceni.Vysledek), 1)
-    c.vyrob()
-    priklad = c.priklady[0]
-    return {"zadani": [priklad.parametry.a, priklad.zadani.op_text, priklad.parametry.b, "=", priklad.parametry.c], "neznama": 2}
+@app.get("/matematika/seznam")
+def read_seznam_lekci():
+    return Lekce().seznam()
+
+@app.get("/matematika/{id}")
+def read_priklad(id):
+    priklad = Lekce().get_priklad(int(id))
+    if priklad.zadani.typ is Operand1: neznama = 0
+    elif priklad.zadani.typ is Operand2: neznama = 2
+    else: neznama = 4
+    return {"zadani": [priklad.parametry.a, priklad.zadani.op_text, priklad.parametry.b, "=", priklad.parametry.c], "neznama": neznama}
