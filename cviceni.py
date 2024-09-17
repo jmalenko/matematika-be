@@ -252,16 +252,6 @@ class ZadaniNasobeniDeleni(ZadaniBinarni):
         self.n = n
         self.typ = typ
 
-    def vstup_nahodny(self):
-        parmametry = ParametryBinarni()
-        # if self.typ == Operand2:
-        parmametry.a = self.n
-        parmametry.b = randint(0, 10)
-        # Swap
-        if self.typ == Operand1 or (self.typ == Vysledek and randint(0, 1) == 0):
-            parmametry.a, parmametry.b = parmametry.b, parmametry.a
-        return parmametry
-
     def over_vysledek(self, parametry):
         return True
 
@@ -276,6 +266,16 @@ class Nasobeni(ZadaniNasobeniDeleni):
     def spocitej(self, parametry):
         parametry.c = parametry.a * parametry.b
 
+    def vstup_nahodny(self):
+        parametry = ParametryBinarni()
+        # if self.typ == Operand2:
+        parametry.a = self.n
+        parametry.b = randint(0, 10)
+        # Swap
+        if self.typ == Operand1 or (self.typ == Vysledek and randint(0, 1) == 0):
+            parametry.a, parametry.b = parametry.b, parametry.a
+        return parametry
+
 
 class Deleni(ZadaniNasobeniDeleni):
     nadpis = "Dělení"
@@ -283,6 +283,15 @@ class Deleni(ZadaniNasobeniDeleni):
 
     def spocitej(self, parametry):
         parametry.c = parametry.a / parametry.b
+
+    def vstup_nahodny(self):
+        parametry = ParametryBinarni()
+        c = randint(0, 10)
+        parametry.b = self.n
+        parametry.a = parametry.b * c
+        if self.typ == Operand2:
+            parametry.b = c
+        return parametry
 
     def over_vysledek(self, parametry):
         # Konverze na cele cislo
