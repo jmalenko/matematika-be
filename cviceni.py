@@ -11,7 +11,7 @@ def inicializace():
     random.seed(seed_value)
 
 
-class Cviceni:
+class SadaPrikladu:
     def __init__(self, zadani, pocet_prikladu=10):
         self.zadani = zadani
         self.pocet_prikladu = pocet_prikladu
@@ -361,7 +361,7 @@ class Vysledek(Clen):
 
 
 def vytvor2(operator, od, do, dopln=Vysledek, pocet=20):
-    c = Cviceni(operator(od, do, dopln), pocet)
+    c = SadaPrikladu(operator(od, do, dopln), pocet)
     c.vyrob()
     c.tisk()
 
@@ -478,7 +478,7 @@ class ParametryPosl(Parametry):
 
 
 def vytvor_posl(n, od, do, neznama=None, pocet=20):
-    c = Cviceni(Posloupnost(n, od, do, neznama), pocet)
+    c = SadaPrikladu(Posloupnost(n, od, do, neznama), pocet)
     c.vyrob()
     c.tisk()
 
@@ -492,7 +492,7 @@ class Tridy:
         return tridy
 
 
-class Lekce:
+class Cviceni:
     def zadani_1_trida(self):
         zadani = []
 
@@ -657,8 +657,8 @@ if __name__ == "__main__":
     tridy = Tridy().seznam()
     for id_trida, nazev_trida in tridy.items():
         # print("%d: %s" % (id_trida, nazev_trida))
-        seznam = Lekce().seznam(id_trida)
+        seznam = Cviceni().seznam(id_trida)
         for id_zadani, nazev_zadani in seznam.items():
             print("%s, cvičení %d: %s" % (nazev_trida, id_zadani, nazev_zadani))
-            priklad = Lekce().get_priklad(id_trida, id_zadani)
+            priklad = Cviceni().get_priklad(id_trida, id_zadani)
             priklad.tisk()
