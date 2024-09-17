@@ -539,7 +539,7 @@ class Lekce:
     def zadani_2_trida(self):
         zadani = []
 
-        for n in range(2, 10 + 1):
+        for n in range(2, 20 + 1):
             zadani.append(lambda n=n: Nasobeni(n, Vysledek))
             zadani.append(lambda n=n: Nasobeni(n, Operand2))
             zadani.append(lambda n=n: Nasobeni(n, Operand1))
