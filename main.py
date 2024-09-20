@@ -37,7 +37,7 @@ def priklad(id_trida, id_cviceni):
         if priklad.zadani.typ is Operand1: neznama = 0
         elif priklad.zadani.typ is Operand2: neznama = 2
         else: neznama = 4
-        return {"zadani": [priklad.parametry.a, priklad.zadani.op_text, priklad.parametry.b, "=", priklad.parametry.c], "neznama": neznama, "x": 1}
+        return {"zadani": [priklad.parametry.a, priklad.zadani.op_text, priklad.parametry.b, "=", priklad.parametry.c], "neznama": neznama}
     elif isinstance(priklad.parametry, ParametryPosl):
         zadani = []
         for i in range(len(priklad.parametry.a)):
@@ -49,6 +49,6 @@ def priklad(id_trida, id_cviceni):
                 zadani.append(abs(n))
         zadani.append("=")
         zadani.append(priklad.parametry.b)
-        return {"zadani": zadani, "neznama": 2 * priklad.zadani.neznama, "y": 1}
+        return {"zadani": zadani, "neznama": 2 * priklad.zadani.neznama}
     else:
         raise TypeError('Unsupported type ' + type(priklad.parametry))
