@@ -391,7 +391,7 @@ a od <= B <= do
 
     def __init__(self, n, od, do, neznama=None):
         # Sestav nadpis
-        nadpis = "Posloupnost operací"
+        nadpis = "Vice operací"
         nadpis += " délky %d" % n
         nadpis += ", čísla od %d do %d" % (od, do)
         if neznama is not None:
