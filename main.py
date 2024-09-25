@@ -30,6 +30,17 @@ def seznam_tridy():
 def seznam_cviceni(id_trida):
     return Cviceni().seznam(int(id_trida))
 
+@app.get("/matematika/dalsi_cviceni/{id_trida}/{id_cviceni}")
+def priklad_next(id_trida, id_cviceni):
+    seznam = Cviceni().seznam(int(id_trida))
+    found = False
+    for id_zadani, nazev_zadani in seznam.items():
+        if found:
+            return {"id": id_zadani, "nazev":nazev_zadani, "end": False}
+        if str(id_zadani) == str(id_cviceni):
+            found = True
+    return {"end": True}
+
 @app.get("/matematika/{id_trida}/{id_cviceni}")
 def priklad(id_trida, id_cviceni):
     priklad = Cviceni().get_priklad(int(id_trida), int(id_cviceni))
