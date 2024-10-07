@@ -18,19 +18,19 @@ app.add_middleware(
 )
 
 
-@app.get("/matematika/test")
+@app.get("/api/matematika/test")
 def read_test():
     return {"zadani": [1, "+", 2, "=", 3], "neznama": 4}
 
-@app.get("/matematika/seznam_tridy")
+@app.get("/api/matematika/seznam_tridy")
 def seznam_tridy():
     return Tridy().seznam()
 
-@app.get("/matematika/seznam_cviceni/{id_trida}")
+@app.get("/api/matematika/seznam_cviceni/{id_trida}")
 def seznam_cviceni(id_trida):
     return Cviceni().seznam(int(id_trida))
 
-@app.get("/matematika/dalsi_cviceni/{id_trida}/{id_cviceni}")
+@app.get("/api/matematika/dalsi_cviceni/{id_trida}/{id_cviceni}")
 def priklad_next(id_trida, id_cviceni):
     seznam = Cviceni().seznam(int(id_trida))
     found = False
@@ -41,7 +41,7 @@ def priklad_next(id_trida, id_cviceni):
             found = True
     return {"end": True}
 
-@app.get("/matematika/{id_trida}/{id_cviceni}")
+@app.get("/api/matematika/{id_trida}/{id_cviceni}")
 def priklad(id_trida, id_cviceni):
     priklad = Cviceni().get_priklad(int(id_trida), int(id_cviceni))
     if isinstance(priklad.parametry, ParametryBinarni):
