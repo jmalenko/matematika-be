@@ -487,19 +487,42 @@ class Tridy:
     def seznam(self):
         tridy = {
             1: "1. třída",
-            2: "2. třída",
+            2: "Sčítání a odčítání do 100", # TODO Pridat: aspon jedno cislo je "v poslednich 10"
+            3: "Malá násobilka",
+            4: "Sčítání a odčítání do 1000",
+            5: "Velká násobilka (do 20)",
+            # 6: "Násobení do 1000", # TODO Pridat podminku: vysledek je do 1000
         }
         return tridy
 
 
 class Cviceni:
+    def seznam_zadani(self, id_trida):
+        match id_trida:
+            case 1:
+                zadani = self.zadani_1_trida()
+            case 2:
+                zadani = self.zadani_scitani_odcitani_do_100()
+            case 3:
+                zadani = self.zadani_mala_nasobilka()
+            case 4:
+                zadani = self.zadani_scitani_odcitani_do_1000()
+            case 5:
+                zadani = self.zadani_velka_nasobilka()
+            # case 6:
+            #     zadani = self.zadani_nasobeni_do_1000()
+            case _:
+                raise ValueError('Unsupported id_trida ' + id_trida)
+        return zadani
+
     def zadani_1_trida(self):
         zadani = []
 
         for do in range(5, 20 + 1):
             od = 1 if do < 10 else 0
-            zadani.append(
-                lambda od=od, do=do: Scitani(od, do, Vysledek))  # Trick, force the lambda parameters to instantiate
+
+            # Trick, force the lambda parameters to instantiate
+            zadani.append(lambda od=od, do=do: Scitani(od, do, Vysledek))
             zadani.append(lambda od=od, do=do: Scitani(od, do, Operand2))
             zadani.append(lambda od=od, do=do: Scitani(od, do, Operand1))
 
@@ -536,10 +559,10 @@ class Cviceni:
 
         return zadani
 
-    def zadani_2_trida(self):
+    def zadani_mala_nasobilka(self):
         zadani = []
 
-        for n in range(2, 20 + 1):
+        for n in range(2, 10 + 1):
             zadani.append(lambda n=n: Nasobeni(n, Vysledek))
             zadani.append(lambda n=n: Nasobeni(n, Operand2))
             zadani.append(lambda n=n: Nasobeni(n, Operand1))
@@ -550,15 +573,65 @@ class Cviceni:
 
         return zadani
 
-    def seznam_zadani(self, id_trida):
-        match id_trida:
-            case 1:
-                zadani = self.zadani_1_trida()
-            case 2:
-                zadani = self.zadani_2_trida()
-            case _:
-                raise ValueError('Unsupported id_trida ' + id_trida)
+    def zadani_velka_nasobilka(self):
+        zadani = []
+
+        for n in range(11, 20 + 1):
+            zadani.append(lambda n=n: Nasobeni(n, Vysledek))
+            zadani.append(lambda n=n: Nasobeni(n, Operand2))
+            zadani.append(lambda n=n: Nasobeni(n, Operand1))
+
+            zadani.append(lambda n=n: Deleni(n, Vysledek))
+            zadani.append(lambda n=n: Deleni(n, Operand2))
+            zadani.append(lambda n=n: Deleni(n, Operand1))
+
         return zadani
+
+    def zadani_scitani_odcitani_do_100(self):
+        zadani = []
+
+        for do in range(30, 100 + 1, 10):
+            zadani.append(lambda do=do: Scitani(0, do, Vysledek))
+            zadani.append(lambda do=do: Scitani(0, do, Operand2))
+            zadani.append(lambda do=do: Scitani(0, do, Operand1))
+
+            zadani.append(lambda do=do: Odcitani(0, do, Vysledek))
+            zadani.append(lambda do=do: Odcitani(0, do, Operand2))
+            zadani.append(lambda do=do: Odcitani(0, do, Operand1))
+
+            zadani.append(lambda do=do: ScitaniOdcitaniVse(0, do))
+
+        return zadani
+
+    def zadani_scitani_odcitani_do_1000(self):
+        zadani = []
+
+        for do in range(200, 1000 + 1, 100):
+            zadani.append(lambda do=do: Scitani(0, do, Vysledek))
+            zadani.append(lambda do=do: Scitani(0, do, Operand2))
+            zadani.append(lambda do=do: Scitani(0, do, Operand1))
+
+            zadani.append(lambda do=do: Odcitani(0, do, Vysledek))
+            zadani.append(lambda do=do: Odcitani(0, do, Operand2))
+            zadani.append(lambda do=do: Odcitani(0, do, Operand1))
+
+            zadani.append(lambda do=do: ScitaniOdcitaniVse(0, do))
+
+        return zadani
+
+    # def zadani_nasobeni_do_1000(self):
+    # zadani = []
+    #
+    # for n in range(200, 1000 + 1, 100):
+    #     zadani.append(lambda n=n: Nasobeni(n, Vysledek))
+    #     zadani.append(lambda n=n: Nasobeni(n, Operand2))
+    #     zadani.append(lambda n=n: Nasobeni(n, Operand1))
+    #
+    #     zadani.append(lambda n=n: Deleni(n, Vysledek))
+    #     zadani.append(lambda n=n: Deleni(n, Operand2))
+    #     zadani.append(lambda n=n: Deleni(n, Operand1))
+    #
+    # return zadani
 
     def seznam(self, id_trida):
         zadani = self.seznam_zadani(id_trida)
