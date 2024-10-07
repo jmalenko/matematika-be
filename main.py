@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from cviceni import Tridy, Cviceni, Operand1, Operand2, Vysledek, ParametryBinarni, ParametryPosl
+from .cviceni import Tridy, Cviceni, Operand1, Operand2, Vysledek, ParametryBinarni, ParametryPosl
 
 app = FastAPI()
 
