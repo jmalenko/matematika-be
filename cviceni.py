@@ -154,9 +154,7 @@ class ZadaniBinarni(Zadani):
             return False
 
         if self.nezajimave(parametry):
-            hranice = 1 - (1 / self.do)
-            if random() < hranice:
-                return False
+            return False
 
         if not (self.od <= parametry.c <= self.do):
             return False
@@ -164,17 +162,8 @@ class ZadaniBinarni(Zadani):
         return True
 
     def nezajimave(self, parametry):
-        # Nezajimave prametry jsou:
-        # 1) trivialni (tj. 0 nebo 1) nebo
-        # 2) jednoduche (nedostatecne velka cisla)
-        return self.trivialni(parametry) or self.jednoduche(parametry)
-
-    def trivialni(self, parametry):
+        # Trivialni (tj. 0 nebo 1) nebo
         return parametry.a in [0, 1] or parametry.b in [0, 1] or parametry.c in [0, 1]
-
-    def jednoduche(self, parametry):
-        hranice = 0.6 * self.do
-        return parametry.a < hranice and parametry.b < hranice and parametry.c < hranice
 
     def tisk(self, parametry):
         s = ""
@@ -749,24 +738,16 @@ if __name__ == "__main__":
     # vytvor_posl(4, -5, 5, 1)
     # vytvor_posl(4, -5, 5, 2)
     # vytvor_posl(4, -5, 5, 3)
-    #
+
     # Lekce
     tridy = Tridy().seznam()
     for id_trida, nazev_trida in tridy.items():
         # print("%d: %s" % (id_trida, nazev_trida))
         seznam = Cviceni().seznam(id_trida)
         for id_zadani, nazev_zadani in seznam.items():
+            # if not (id_trida == 1 and id_zadani == 112):
+            #     continue
             print("%s, cvičení %d: %s" % (nazev_trida, id_zadani, nazev_zadani))
-            priklad = Cviceni().get_priklad(id_trida, id_zadani)
-            priklad.tisk()
-
-    # Scitani do 20
-    id_trida = 1
-    # id_zadani = 113
-    id_zadani = 7
-    # Scitani do 1000
-    # id_trida = 4
-    # id_zadani = 57
-    for i in range(20):
-        priklad = Cviceni().get_priklad(id_trida, id_zadani)
-        priklad.tisk()
+            for i in range(10):
+                priklad = Cviceni().get_priklad(id_trida, id_zadani)
+                priklad.tisk()
