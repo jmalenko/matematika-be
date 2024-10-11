@@ -6,7 +6,8 @@ from .cviceni import Tridy, Cviceni, Operand1, Operand2, Vysledek, ParametryBina
 app = FastAPI()
 
 origins = [
-    "http://localhost:5173",
+    "http://localhost:5173", # DEV
+    "http://localhost:4173", # PROD
 ]
 
 app.add_middleware(
