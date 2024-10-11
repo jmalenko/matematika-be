@@ -68,6 +68,7 @@ class Priklad:
 class Zadani:
     def __init__(self, nadpis):
         self.nadpis = nadpis
+        self.podminky = []
 
     def vyrob_priklad(self):
         while True:
@@ -87,27 +88,54 @@ class Zadani:
         raise NotImplementedError()
 
     def over_vysledek(self, parametry):
-        return True
+        return self.kontrolaPodminek(parametry)
 
     def tisk(self, parametry):
         raise NotImplementedError()
+
+    def pridatPodminku(self, podminka):
+        self.podminky.append(podminka)
+        return self
+
+    def kontrolaPodminek(self, parametry):
+        for podminka in self.podminky:
+            if not podminka.kontrola(parametry):
+                return False
+        return True
 
 
 class Parametry:
     pass
 
 
+class Podminka:
+    def kontrola(self, parametry):
+        raise NotImplementedError()
+
+
+class Rozsah(Podminka):
+    def __init__(self, od, do):
+        self.od = od
+        self.do = do
+
+    def kontrola(self, parametry):
+        return (
+                self.od <= parametry.a <= self.do or
+                self.od <= parametry.b <= self.do or
+                self.od <= parametry.c <= self.do)
+
+
 # Binarni
 
 class ZadaniBinarni(Zadani):
-    def __init__(self, od, do, typ):
+    def __init__(self, od, do, typ=None):
         # Sestav nadpis
-        nadpis = self.nadpis
+        nadpis = self.nadpis if hasattr(self, 'nadpis') else ""
         if do < 10:
             if od != 1:
                 nadpis += " od %d" % od
         nadpis += " do %d" % do
-        if typ.nadpis != "":
+        if typ != None and typ.nadpis != "":
             nadpis += ", %s" % typ.nadpis
         super().__init__(nadpis)
 
@@ -122,12 +150,18 @@ class ZadaniBinarni(Zadani):
         return parmametry
 
     def over_vysledek(self, parametry):
+        if not super().over_vysledek(parametry):
+            return False
+
         if self.nezajimave(parametry):
             hranice = 1 - (1 / self.do)
             if random() < hranice:
                 return False
 
-        return self.od <= parametry.c <= self.do
+        if not (self.od <= parametry.c <= self.do):
+            return False
+
+        return True
 
     def nezajimave(self, parametry):
         # Nezajimave prametry jsou:
@@ -136,23 +170,11 @@ class ZadaniBinarni(Zadani):
         return self.trivialni(parametry) or self.jednoduche(parametry)
 
     def trivialni(self, parametry):
-        # if self.do <= 10:
-        #     return False
-        if parametry.a in [0, 1]:
-            return True
-        if parametry.b in [0, 1]:
-            return True
-        if parametry.c in [0, 1]:
-            return True
-        return False
+        return parametry.a in [0, 1] or parametry.b in [0, 1] or parametry.c in [0, 1]
 
     def jednoduche(self, parametry):
-        # if self.do <= 20:
-        #     return False
         hranice = 0.6 * self.do
-        if parametry.a < hranice and parametry.b < hranice and parametry.c < hranice:
-            return True
-        return False
+        return parametry.a < hranice and parametry.b < hranice and parametry.c < hranice
 
     def tisk(self, parametry):
         s = ""
@@ -215,9 +237,8 @@ class Odcitani(ZadaniBinarni):
 
 class ScitaniOdcitaniVse(ZadaniBinarni):
     def __init__(self, od, do):
+        super().__init__(od, do)
         self.nadpis = "Sčítání a odčítání do %d" % do
-        self.od = od
-        self.do = do
 
     def vyrob_priklad(self):
         volba = randint(1, 6)
@@ -486,11 +507,11 @@ def vytvor_posl(n, od, do, neznama=None, pocet=20):
 class Tridy:
     def seznam(self):
         tridy = {
-            1: "1. třída",
-            2: "Sčítání a odčítání do 100", # TODO Pridat: aspon jedno cislo je "v poslednich 10"
-            3: "Malá násobilka",
-            4: "Sčítání a odčítání do 1000",
-            5: "Velká násobilka (do 20)",
+            1: "1. třída – Sčítání a odčítání do 20",
+            2: "2. třída – Sčítání a odčítání do 100",
+            3: "2. třída – Malá násobilka (do 100)",
+            4: "3. třída – Sčítání a odčítání do 1000",
+            5: "3. třída – Velká násobilka (operandy do 20)",
             # 6: "Násobení do 1000", # TODO Pridat podminku: vysledek je do 1000
         }
         return tridy
@@ -500,7 +521,7 @@ class Cviceni:
     def seznam_zadani(self, id_trida):
         match id_trida:
             case 1:
-                zadani = self.zadani_1_trida()
+                zadani = self.zadani_scitani_odcitani_do_20()
             case 2:
                 zadani = self.zadani_scitani_odcitani_do_100()
             case 3:
@@ -515,24 +536,25 @@ class Cviceni:
                 raise ValueError('Unsupported id_trida ' + id_trida)
         return zadani
 
-    def zadani_1_trida(self):
+    def zadani_scitani_odcitani_do_20(self):
         zadani = []
 
         for do in range(5, 20 + 1):
             od = 1 if do < 10 else 0
+            rozsah_od = do - 4
 
             # Trick, force the lambda parameters to instantiate
-            zadani.append(lambda od=od, do=do: Scitani(od, do, Vysledek))
-            zadani.append(lambda od=od, do=do: Scitani(od, do, Operand2))
-            zadani.append(lambda od=od, do=do: Scitani(od, do, Operand1))
+            zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Scitani(od, do, Vysledek).pridatPodminku(Rozsah(rozsah_od, do)))
+            zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Scitani(od, do, Operand2).pridatPodminku(Rozsah(rozsah_od, do)))
+            zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Scitani(od, do, Operand1).pridatPodminku(Rozsah(rozsah_od, do)))
 
-            zadani.append(lambda od=od, do=do: Odcitani(od, do, Vysledek))
-            zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand2))
-            zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand1))
+            zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Odcitani(od, do, Vysledek).pridatPodminku(Rozsah(rozsah_od, do)))
+            zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Odcitani(od, do, Operand2).pridatPodminku(Rozsah(rozsah_od, do)))
+            zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Odcitani(od, do, Operand1).pridatPodminku(Rozsah(rozsah_od, do)))
 
-            zadani.append(lambda od=od, do=do: ScitaniOdcitaniVse(od, do))
+            zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: ScitaniOdcitaniVse(od, do).pridatPodminku(Rozsah(rozsah_od, do)))
 
-            # Nula
+            # Nula, podminky nejsou nutne
             if do == 9:
                 od = 0
                 zadani.append(lambda od=od, do=do: Scitani(od, do, Vysledek))
@@ -543,7 +565,7 @@ class Cviceni:
                 zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand2))
                 zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand1))
 
-        # Více operandů
+        # Více operandů, podminka je vyjadrena v cisle od
         do = 20
         od = do // 3
         zadani.append(lambda od=od, do=do: Posloupnost(3, od, do, None))
@@ -591,15 +613,16 @@ class Cviceni:
         zadani = []
 
         for do in range(30, 100 + 1, 10):
-            zadani.append(lambda do=do: Scitani(0, do, Vysledek))
-            zadani.append(lambda do=do: Scitani(0, do, Operand2))
-            zadani.append(lambda do=do: Scitani(0, do, Operand1))
+            od = do - 9
+            zadani.append(lambda od=od, do=do: Scitani(0, do, Vysledek).pridatPodminku(Rozsah(od, do)))
+            zadani.append(lambda od=od, do=do: Scitani(0, do, Operand2).pridatPodminku(Rozsah(od, do)))
+            zadani.append(lambda od=od, do=do: Scitani(0, do, Operand1).pridatPodminku(Rozsah(od, do)))
 
-            zadani.append(lambda do=do: Odcitani(0, do, Vysledek))
-            zadani.append(lambda do=do: Odcitani(0, do, Operand2))
-            zadani.append(lambda do=do: Odcitani(0, do, Operand1))
+            zadani.append(lambda od=od, do=do: Odcitani(0, do, Vysledek).pridatPodminku(Rozsah(od, do)))
+            zadani.append(lambda od=od, do=do: Odcitani(0, do, Operand2).pridatPodminku(Rozsah(od, do)))
+            zadani.append(lambda od=od, do=do: Odcitani(0, do, Operand1).pridatPodminku(Rozsah(od, do)))
 
-            zadani.append(lambda do=do: ScitaniOdcitaniVse(0, do))
+            zadani.append(lambda od=od, do=do: ScitaniOdcitaniVse(0, do).pridatPodminku(Rozsah(od, do)))
 
         return zadani
 
@@ -607,15 +630,16 @@ class Cviceni:
         zadani = []
 
         for do in range(200, 1000 + 1, 100):
-            zadani.append(lambda do=do: Scitani(0, do, Vysledek))
-            zadani.append(lambda do=do: Scitani(0, do, Operand2))
-            zadani.append(lambda do=do: Scitani(0, do, Operand1))
+            od = do - 99
+            zadani.append(lambda od=od, do=do: Scitani(0, do, Vysledek).pridatPodminku(Rozsah(od, do)))
+            zadani.append(lambda od=od, do=do: Scitani(0, do, Operand2).pridatPodminku(Rozsah(od, do)))
+            zadani.append(lambda od=od, do=do: Scitani(0, do, Operand1).pridatPodminku(Rozsah(od, do)))
 
-            zadani.append(lambda do=do: Odcitani(0, do, Vysledek))
-            zadani.append(lambda do=do: Odcitani(0, do, Operand2))
-            zadani.append(lambda do=do: Odcitani(0, do, Operand1))
+            zadani.append(lambda od=od, do=do: Odcitani(0, do, Vysledek).pridatPodminku(Rozsah(od, do)))
+            zadani.append(lambda od=od, do=do: Odcitani(0, do, Operand2).pridatPodminku(Rozsah(od, do)))
+            zadani.append(lambda od=od, do=do: Odcitani(0, do, Operand1).pridatPodminku(Rozsah(od, do)))
 
-            zadani.append(lambda do=do: ScitaniOdcitaniVse(0, do))
+            zadani.append(lambda od=od, do=do: ScitaniOdcitaniVse(0, do).pridatPodminku(Rozsah(od, do)))
 
         return zadani
 
@@ -656,76 +680,76 @@ class Cviceni:
 
 if __name__ == "__main__":
     inicializace()
-    ciselna_osa_svisle()
-
-    vytvor2(Scitani, 1, 5)
-    vytvor2(Scitani, 1, 10)
-    vytvor(Scitani, 10)
-
-    vytvor(OdcitaniOdectiMeneNezPet, 10)
-    vytvor(OdcitaniOdectiViceNezPet, 10)
-
-    vytvor2(OdcitaniSeZapornymi, -10, 10)
-    vytvor2(ScitaniSeZapornymi, -10, 10)
-
-    for do in [10, 13, 20, 30, 50]:
-        vytvor(Scitani, do)
-        vytvor(Scitani, do, Operand1)
-        vytvor(Scitani, do, Operand2)
-
-        vytvor(Odcitani, do)
-        vytvor(Odcitani, do, Operand1)
-        vytvor(Odcitani, do, Operand2)
-
-        if do % 10 != 0:  # Priklady na nasobeni a deleni nepotrebuji mezikroky
-            continue
-
-        # vytvor(Nasobeni, do)
-        # vytvor(Nasobeni, do, Operand1)
-        # vytvor(Nasobeni, do, Operand2)
-        #
-        # vytvor(Deleni, do)
-        # vytvor(Deleni, do, Operand1)
-        # vytvor(Deleni, do, Operand2)
-
-    # Dlouha posloupnost
-
-    vytvor_posl(3, 1, 5)
-    vytvor_posl(3, 1, 5, 0)
-    vytvor_posl(3, 1, 5, 1)
-    vytvor_posl(3, 1, 5, 2)
-
-    vytvor_posl(4, 1, 5)
-    vytvor_posl(4, 1, 5, 0)
-    vytvor_posl(4, 1, 5, 1)
-    vytvor_posl(4, 1, 5, 2)
-    vytvor_posl(4, 1, 5, 3)
-
-    # Velka cisla
-    do = 20
-    od = do // 3
-    vytvor_posl(2, od, do)
-    vytvor_posl(2, od, do, 1)
-    vytvor_posl(2, od, do, 0)
-
-    vytvor_posl(3, od, do)
-    vytvor_posl(3, od, do, 2)
-    vytvor_posl(3, od, do, 1)
-    vytvor_posl(3, od, do, 0)
-
-    # Zaporna cisla
-
-    vytvor_posl(3, -5, 5)
-    vytvor_posl(3, -5, 5, 0)
-    vytvor_posl(3, -5, 5, 1)
-    vytvor_posl(3, -5, 5, 2)
-
-    vytvor_posl(4, -5, 5)
-    vytvor_posl(4, -5, 5, 0)
-    vytvor_posl(4, -5, 5, 1)
-    vytvor_posl(4, -5, 5, 2)
-    vytvor_posl(4, -5, 5, 3)
-
+    # ciselna_osa_svisle()
+    #
+    # vytvor2(Scitani, 1, 5)
+    # vytvor2(Scitani, 1, 10)
+    # vytvor(Scitani, 10)
+    #
+    # vytvor(OdcitaniOdectiMeneNezPet, 10)
+    # vytvor(OdcitaniOdectiViceNezPet, 10)
+    #
+    # vytvor2(OdcitaniSeZapornymi, -10, 10)
+    # vytvor2(ScitaniSeZapornymi, -10, 10)
+    #
+    # for do in [10, 13, 20, 30, 50]:
+    #     vytvor(Scitani, do)
+    #     vytvor(Scitani, do, Operand1)
+    #     vytvor(Scitani, do, Operand2)
+    #
+    #     vytvor(Odcitani, do)
+    #     vytvor(Odcitani, do, Operand1)
+    #     vytvor(Odcitani, do, Operand2)
+    #
+    #     if do % 10 != 0:  # Priklady na nasobeni a deleni nepotrebuji mezikroky
+    #         continue
+    #
+    #     # vytvor(Nasobeni, do)
+    #     # vytvor(Nasobeni, do, Operand1)
+    #     # vytvor(Nasobeni, do, Operand2)
+    #     #
+    #     # vytvor(Deleni, do)
+    #     # vytvor(Deleni, do, Operand1)
+    #     # vytvor(Deleni, do, Operand2)
+    #
+    # # Dlouha posloupnost
+    #
+    # vytvor_posl(3, 1, 5)
+    # vytvor_posl(3, 1, 5, 0)
+    # vytvor_posl(3, 1, 5, 1)
+    # vytvor_posl(3, 1, 5, 2)
+    #
+    # vytvor_posl(4, 1, 5)
+    # vytvor_posl(4, 1, 5, 0)
+    # vytvor_posl(4, 1, 5, 1)
+    # vytvor_posl(4, 1, 5, 2)
+    # vytvor_posl(4, 1, 5, 3)
+    #
+    # # Velka cisla
+    # do = 20
+    # od = do // 3
+    # vytvor_posl(2, od, do)
+    # vytvor_posl(2, od, do, 1)
+    # vytvor_posl(2, od, do, 0)
+    #
+    # vytvor_posl(3, od, do)
+    # vytvor_posl(3, od, do, 2)
+    # vytvor_posl(3, od, do, 1)
+    # vytvor_posl(3, od, do, 0)
+    #
+    # # Zaporna cisla
+    #
+    # vytvor_posl(3, -5, 5)
+    # vytvor_posl(3, -5, 5, 0)
+    # vytvor_posl(3, -5, 5, 1)
+    # vytvor_posl(3, -5, 5, 2)
+    #
+    # vytvor_posl(4, -5, 5)
+    # vytvor_posl(4, -5, 5, 0)
+    # vytvor_posl(4, -5, 5, 1)
+    # vytvor_posl(4, -5, 5, 2)
+    # vytvor_posl(4, -5, 5, 3)
+    #
     # Lekce
     tridy = Tridy().seznam()
     for id_trida, nazev_trida in tridy.items():
@@ -735,3 +759,14 @@ if __name__ == "__main__":
             print("%s, cvičení %d: %s" % (nazev_trida, id_zadani, nazev_zadani))
             priklad = Cviceni().get_priklad(id_trida, id_zadani)
             priklad.tisk()
+
+    # Scitani do 20
+    id_trida = 1
+    # id_zadani = 113
+    id_zadani = 7
+    # Scitani do 1000
+    # id_trida = 4
+    # id_zadani = 57
+    for i in range(20):
+        priklad = Cviceni().get_priklad(id_trida, id_zadani)
+        priklad.tisk()
