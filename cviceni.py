@@ -264,16 +264,18 @@ class ScitaniOdcitaniVse(ZadaniBinarni):
 
 
 class ZadaniNasobeniDeleni(ZadaniBinarni):
-    def __init__(self, n, typ, od=0, do=10):
+    def __init__(self, x_od, x_do, y_od, y_do, typ):
         # Sestav nadpis
         nadpis = self.nadpis
-        nadpis += ", číslo %d" % n
+        nadpis += ", "
+        nadpis += ("číslo %d" % x_do) if x_od == x_do else ("čísla do %d" % x_do)
         if typ.nadpis != "":
             nadpis += ", %s" % typ.nadpis
 
-        super().__init__(od, do, typ)
+        super().__init__(y_od, y_do, typ)
 
-        self.n = n
+        self.x_od = x_od
+        self.x_do = x_do
         self.nadpis = nadpis
 
     def over_vysledek(self, parametry):
@@ -292,7 +294,7 @@ class Nasobeni(ZadaniNasobeniDeleni):
 
     def vstup_nahodny(self):
         parametry = ParametryBinarni()
-        parametry.a = self.n
+        parametry.a = self.x_do if self.x_od == self.x_do else randint(self.x_od, self.x_do)
         parametry.b = randint(self.od, self.do)
         # Swap
         if self.typ == Operand1 or (self.typ == Vysledek and randint(0, 1) == 0):
@@ -310,7 +312,7 @@ class Deleni(ZadaniNasobeniDeleni):
     def vstup_nahodny(self):
         parametry = ParametryBinarni()
         c = randint(self.od, self.do)
-        parametry.b = self.n
+        parametry.b = self.x_do if self.x_od == self.x_do else randint(self.x_od, self.x_do)
         parametry.a = parametry.b * c
         if self.typ == Operand2:
             parametry.b = c
@@ -586,13 +588,13 @@ class Cviceni:
         zadani = []
 
         for n in range(2, 10 + 1):
-            zadani.append(lambda n=n: Nasobeni(n, Vysledek))
-            zadani.append(lambda n=n: Nasobeni(n, Operand2))
-            zadani.append(lambda n=n: Nasobeni(n, Operand1))
+            zadani.append(lambda n=n: Nasobeni(n, n, 0, 10, Vysledek))
+            zadani.append(lambda n=n: Nasobeni(n, n, 0, 10, Operand2))
+            zadani.append(lambda n=n: Nasobeni(n, n, 0, 10, Operand1))
 
-            zadani.append(lambda n=n: Deleni(n, Vysledek))
-            zadani.append(lambda n=n: Deleni(n, Operand2))
-            zadani.append(lambda n=n: Deleni(n, Operand1))
+            zadani.append(lambda n=n: Deleni(n, n, 0, 10, Vysledek))
+            zadani.append(lambda n=n: Deleni(n, n, 0, 10, Operand2))
+            zadani.append(lambda n=n: Deleni(n, n, 0, 10, Operand1))
 
         return zadani
 
@@ -603,39 +605,38 @@ class Cviceni:
         for n in range(11, 20 + 1):
             od = 1
             do = 10
-            zadani.append(lambda n=n, od=od, do=do: Nasobeni(n, Vysledek, od, do))
-            zadani.append(lambda n=n, od=od, do=do: Nasobeni(n, Operand2, od, do))
-            zadani.append(lambda n=n, od=od, do=do: Nasobeni(n, Operand1, od, do))
+            zadani.append(lambda n=n, od=od, do=do: Nasobeni(n, n, od, do, Vysledek))
+            zadani.append(lambda n=n, od=od, do=do: Nasobeni(n, n, od, do, Operand2))
+            zadani.append(lambda n=n, od=od, do=do: Nasobeni(n, n, od, do, Operand1))
 
-            zadani.append(lambda n=n, od=od, do=do: Deleni(n, Vysledek, od, do))
-            zadani.append(lambda n=n, od=od, do=do: Deleni(n, Operand2, od, do))
-            zadani.append(lambda n=n, od=od, do=do: Deleni(n, Operand1, od, do))
+            zadani.append(lambda n=n, od=od, do=do: Deleni(n, n, od, do, Vysledek))
+            zadani.append(lambda n=n, od=od, do=do: Deleni(n, n, od, do, Operand2))
+            zadani.append(lambda n=n, od=od, do=do: Deleni(n, n, od, do, Operand1))
 
-        # Jeden operand do 20, druhy 8..n (n=jeden operand)
+        # Jeden operand do 20, druhy 11..20
         for n in range(11, 20 + 1):
-            od = 8
-            do = n
-            zadani.append(lambda n=n, od=od, do=do: Nasobeni(n, Vysledek, od, do))
-            zadani.append(lambda n=n, od=od, do=do: Nasobeni(n, Operand2, od, do))
-            zadani.append(lambda n=n, od=od, do=do: Nasobeni(n, Operand1, od, do))
+            od = 11
+            do = 20
+            zadani.append(lambda n=n, od=od, do=do: Nasobeni(n, n, od, do, Vysledek))
+            zadani.append(lambda n=n, od=od, do=do: Nasobeni(n, n, od, do, Operand2))
+            zadani.append(lambda n=n, od=od, do=do: Nasobeni(n, n, od, do, Operand1))
 
-            zadani.append(lambda n=n, od=od, do=do: Deleni(n, Vysledek, od, do))
-            zadani.append(lambda n=n, od=od, do=do: Deleni(n, Operand2, od, do))
-            zadani.append(lambda n=n, od=od, do=do: Deleni(n, Operand1, od, do))
+            zadani.append(lambda n=n, od=od, do=do: Deleni(n, n, od, do, Vysledek))
+            zadani.append(lambda n=n, od=od, do=do: Deleni(n, n, od, do, Operand2))
+            zadani.append(lambda n=n, od=od, do=do: Deleni(n, n, od, do, Operand1))
 
         # Operand do 100
         max = 1000
         for n_dec in range(30, 100 + 1, 10):
-            n = randint(n_dec - 9, n_dec)
-            od = 0
+            od = n_dec - 9
             do = n_dec
-            zadani.append(lambda n=n, od=od, do=do, max=max: Nasobeni(n, Vysledek, od, do).pridatPodminku(Max(max)))
-            zadani.append(lambda n=n, od=od, do=do, max=max: Nasobeni(n, Operand2, od, do).pridatPodminku(Max(max)))
-            zadani.append(lambda n=n, od=od, do=do, max=max: Nasobeni(n, Operand1, od, do).pridatPodminku(Max(max)))
+            zadani.append(lambda od=od, do=do, max=max: Nasobeni(od, do, 0, do, Vysledek).pridatPodminku(Max(max)))
+            zadani.append(lambda od=od, do=do, max=max: Nasobeni(od, do, 0, do, Operand2).pridatPodminku(Max(max)))
+            zadani.append(lambda od=od, do=do, max=max: Nasobeni(od, do, 0, do, Operand1).pridatPodminku(Max(max)))
 
-            zadani.append(lambda n=n, od=od, do=do, max=max: Deleni(n, Vysledek, od, do).pridatPodminku(Max(max)))
-            zadani.append(lambda n=n, od=od, do=do, max=max: Deleni(n, Operand2, od, do).pridatPodminku(Max(max)))
-            zadani.append(lambda n=n, od=od, do=do, max=max: Deleni(n, Operand1, od, do).pridatPodminku(Max(max)))
+            zadani.append(lambda od=od, do=do, max=max: Deleni(od, do, 0, do, Vysledek).pridatPodminku(Max(max)))
+            zadani.append(lambda od=od, do=do, max=max: Deleni(od, do, 0, do, Operand2).pridatPodminku(Max(max)))
+            zadani.append(lambda od=od, do=do, max=max: Deleni(od, do, 0, do, Operand1).pridatPodminku(Max(max)))
 
         return zadani
 
