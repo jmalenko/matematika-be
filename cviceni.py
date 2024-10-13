@@ -125,6 +125,17 @@ class Rozsah(Podminka):
                 self.od <= parametry.c <= self.do)
 
 
+class Max(Podminka):
+    def __init__(self, max):
+        self.max = max
+
+    def kontrola(self, parametry):
+        return (
+                parametry.a <= self.max and
+                parametry.b <= self.max and
+                parametry.c <= self.max)
+
+
 # Binarni
 
 class ZadaniBinarni(Zadani):
@@ -162,8 +173,11 @@ class ZadaniBinarni(Zadani):
         return True
 
     def nezajimave(self, parametry):
+        if self.do <= 7:
+            return False
         # Trivialni (tj. 0 nebo 1) nebo
-        return parametry.a in [0, 1] or parametry.b in [0, 1] or parametry.c in [0, 1]
+        trivialni = parametry.a in [0, 1] or parametry.b in [0, 1] or parametry.c in [0, 1]
+        return trivialni
 
     def tisk(self, parametry):
         s = ""
@@ -250,23 +264,23 @@ class ScitaniOdcitaniVse(ZadaniBinarni):
 
 
 class ZadaniNasobeniDeleni(ZadaniBinarni):
-    def __init__(self, n, typ):
+    def __init__(self, n, typ, od=0, do=10):
         # Sestav nadpis
         nadpis = self.nadpis
         nadpis += ", číslo %d" % n
         if typ.nadpis != "":
             nadpis += ", %s" % typ.nadpis
-        # super().__init__(nadpis)
-        self.nadpis = nadpis
+
+        super().__init__(od, do, typ)
 
         self.n = n
-        self.typ = typ
+        self.nadpis = nadpis
 
     def over_vysledek(self, parametry):
-        return True
+        if not Zadani.over_vysledek(self, parametry):
+            return False
 
-    def jednoduche(self, parametry):
-        return False
+        return True
 
 
 class Nasobeni(ZadaniNasobeniDeleni):
@@ -278,9 +292,8 @@ class Nasobeni(ZadaniNasobeniDeleni):
 
     def vstup_nahodny(self):
         parametry = ParametryBinarni()
-        # if self.typ == Operand2:
         parametry.a = self.n
-        parametry.b = randint(0, 10)
+        parametry.b = randint(self.od, self.do)
         # Swap
         if self.typ == Operand1 or (self.typ == Vysledek and randint(0, 1) == 0):
             parametry.a, parametry.b = parametry.b, parametry.a
@@ -296,7 +309,7 @@ class Deleni(ZadaniNasobeniDeleni):
 
     def vstup_nahodny(self):
         parametry = ParametryBinarni()
-        c = randint(0, 10)
+        c = randint(self.od, self.do)
         parametry.b = self.n
         parametry.a = parametry.b * c
         if self.typ == Operand2:
@@ -500,8 +513,7 @@ class Tridy:
             2: "2. třída – Sčítání a odčítání do 100",
             3: "2. třída – Malá násobilka (do 100)",
             4: "3. třída – Sčítání a odčítání do 1000",
-            5: "3. třída – Velká násobilka (operandy do 20)",
-            # 6: "Násobení do 1000", # TODO Pridat podminku: vysledek je do 1000
+            5: "3. třída – Velká násobilka"
         }
         return tridy
 
@@ -587,14 +599,43 @@ class Cviceni:
     def zadani_velka_nasobilka(self):
         zadani = []
 
+        # Jeden operand do 20, druhy 0..10
         for n in range(11, 20 + 1):
-            zadani.append(lambda n=n: Nasobeni(n, Vysledek))
-            zadani.append(lambda n=n: Nasobeni(n, Operand2))
-            zadani.append(lambda n=n: Nasobeni(n, Operand1))
+            od = 1
+            do = 10
+            zadani.append(lambda n=n, od=od, do=do: Nasobeni(n, Vysledek, od, do))
+            zadani.append(lambda n=n, od=od, do=do: Nasobeni(n, Operand2, od, do))
+            zadani.append(lambda n=n, od=od, do=do: Nasobeni(n, Operand1, od, do))
 
-            zadani.append(lambda n=n: Deleni(n, Vysledek))
-            zadani.append(lambda n=n: Deleni(n, Operand2))
-            zadani.append(lambda n=n: Deleni(n, Operand1))
+            zadani.append(lambda n=n, od=od, do=do: Deleni(n, Vysledek, od, do))
+            zadani.append(lambda n=n, od=od, do=do: Deleni(n, Operand2, od, do))
+            zadani.append(lambda n=n, od=od, do=do: Deleni(n, Operand1, od, do))
+
+        # Jeden operand do 20, druhy 8..n (n=jeden operand)
+        for n in range(11, 20 + 1):
+            od = 8
+            do = n
+            zadani.append(lambda n=n, od=od, do=do: Nasobeni(n, Vysledek, od, do))
+            zadani.append(lambda n=n, od=od, do=do: Nasobeni(n, Operand2, od, do))
+            zadani.append(lambda n=n, od=od, do=do: Nasobeni(n, Operand1, od, do))
+
+            zadani.append(lambda n=n, od=od, do=do: Deleni(n, Vysledek, od, do))
+            zadani.append(lambda n=n, od=od, do=do: Deleni(n, Operand2, od, do))
+            zadani.append(lambda n=n, od=od, do=do: Deleni(n, Operand1, od, do))
+
+        # Operand do 100
+        max = 1000
+        for n_dec in range(30, 100 + 1, 10):
+            n = randint(n_dec - 9, n_dec)
+            od = 0
+            do = n_dec
+            zadani.append(lambda n=n, od=od, do=do, max=max: Nasobeni(n, Vysledek, od, do).pridatPodminku(Max(max)))
+            zadani.append(lambda n=n, od=od, do=do, max=max: Nasobeni(n, Operand2, od, do).pridatPodminku(Max(max)))
+            zadani.append(lambda n=n, od=od, do=do, max=max: Nasobeni(n, Operand1, od, do).pridatPodminku(Max(max)))
+
+            zadani.append(lambda n=n, od=od, do=do, max=max: Deleni(n, Vysledek, od, do).pridatPodminku(Max(max)))
+            zadani.append(lambda n=n, od=od, do=do, max=max: Deleni(n, Operand2, od, do).pridatPodminku(Max(max)))
+            zadani.append(lambda n=n, od=od, do=do, max=max: Deleni(n, Operand1, od, do).pridatPodminku(Max(max)))
 
         return zadani
 
