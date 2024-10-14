@@ -263,6 +263,34 @@ class ScitaniOdcitaniVse(ZadaniBinarni):
         return zadani().vyrob_priklad()
 
 
+class NasobeniDeleniVse(ZadaniBinarni):
+    def __init__(self, x_od, x_do, y_od, y_do):
+        super().__init__(y_od, y_do, None)
+
+        self.x_od = x_od
+        self.x_do = x_do
+        self.nadpis = "Malá násobilka (do 100)" if x_do == 10 and y_do == 10 else "Násobení a dělení do %d" % self.do
+
+    def vyrob_priklad(self):
+        volba = randint(1, 6)
+        match volba:
+            case 1:
+                zadani = lambda x_od=self.x_od, x_do=self.x_do, y_od=self.od, y_do=self.do: Nasobeni(x_od, x_do, y_od, y_do, Vysledek)
+            case 2:
+                zadani = lambda x_od=self.x_od, x_do=self.x_do, y_od=self.od, y_do=self.do: Nasobeni(x_od, x_do, y_od, y_do, Operand2)
+            case 3:
+                zadani = lambda x_od=self.x_od, x_do=self.x_do, y_od=self.od, y_do=self.do: Nasobeni(x_od, x_do, y_od, y_do, Operand1)
+            case 4:
+                zadani = lambda x_od=self.x_od, x_do=self.x_do, y_od=self.od, y_do=self.do: Deleni(x_od, x_do, y_od, y_do, Vysledek)
+            case 5:
+                zadani = lambda x_od=self.x_od, x_do=self.x_do, y_od=self.od, y_do=self.do: Deleni(x_od, x_do, y_od, y_do, Operand2)
+            case 6:
+                zadani = lambda x_od=self.x_od, x_do=self.x_do, y_od=self.od, y_do=self.do: Deleni(x_od, x_do, y_od, y_do, Operand1)
+            case _:
+                raise ValueError('Unsupported branch ' + volba)
+        return zadani().vyrob_priklad()
+
+
 class ZadaniNasobeniDeleni(ZadaniBinarni):
     def __init__(self, x_od, x_do, y_od, y_do, typ):
         # Sestav nadpis
@@ -582,6 +610,9 @@ class Cviceni:
         zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 1))
         zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 0))
 
+        # Závěrečný příklad
+        zadani.append(lambda: ScitaniOdcitaniVse(0, 20).pridatPodminku(Rozsah(0, 20)))
+
         return zadani
 
     def zadani_mala_nasobilka(self):
@@ -595,6 +626,9 @@ class Cviceni:
             zadani.append(lambda n=n: Deleni(n, n, 0, 10, Vysledek))
             zadani.append(lambda n=n: Deleni(n, n, 0, 10, Operand2))
             zadani.append(lambda n=n: Deleni(n, n, 0, 10, Operand1))
+
+        # Závěrečný příklad
+        zadani.append(lambda: NasobeniDeleniVse(2, 10, 2, 10))
 
         return zadani
 
@@ -638,6 +672,9 @@ class Cviceni:
             zadani.append(lambda od=od, do=do, max=max: Deleni(od, do, 0, do, Operand2).pridatPodminku(Max(max)))
             zadani.append(lambda od=od, do=do, max=max: Deleni(od, do, 0, do, Operand1).pridatPodminku(Max(max)))
 
+        # Závěrečný příklad
+        zadani.append(lambda: NasobeniDeleniVse(2, 50, 2, 20))
+
         return zadani
 
     def zadani_scitani_odcitani_do_100(self):
@@ -655,6 +692,8 @@ class Cviceni:
 
             zadani.append(lambda od=od, do=do: ScitaniOdcitaniVse(0, do).pridatPodminku(Rozsah(od, do)))
 
+        # Závěrečný příklad - použije se předchozí
+
         return zadani
 
     def zadani_scitani_odcitani_do_1000(self):
@@ -671,6 +710,8 @@ class Cviceni:
             zadani.append(lambda od=od, do=do: Odcitani(0, do, Operand1).pridatPodminku(Rozsah(od, do)))
 
             zadani.append(lambda od=od, do=do: ScitaniOdcitaniVse(0, do).pridatPodminku(Rozsah(od, do)))
+
+        # Závěrečný příklad - použije se předchozí
 
         return zadani
 
