@@ -673,7 +673,7 @@ class Cviceni:
             zadani.append(lambda od=od, do=do, max=max: Deleni(od, do, 0, do, Operand1).pridatPodminku(Max(max)))
 
         # Závěrečný příklad
-        zadani.append(lambda: NasobeniDeleniVse(2, 50, 2, 20))
+        zadani.append(lambda: NasobeniDeleniVse(2, 100, 2, 10).pridatPodminku(Max(max)))
 
         return zadani
 
