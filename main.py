@@ -42,6 +42,18 @@ def priklad_next(id_trida, id_cviceni):
             found = True
     return {"end": True}
 
+@app.get("/api/matematika/info_cviceni/{id_trida}/{id_cviceni}")
+def priklad_current(id_trida, id_cviceni):
+    seznam = Cviceni().seznam(int(id_trida))
+    cviceni_nazev = seznam[int(id_cviceni)]
+    return {
+        "nazev_predmet": "Matematika",
+        "id_trida": id_trida,
+        "nazev_trida": Tridy().seznam()[int(id_trida)],
+        "id_cviceni": id_cviceni,
+        "nazev_cviceni": cviceni_nazev,
+        "next_cviceni": priklad_next(id_trida, id_cviceni)}
+
 @app.get("/api/matematika/{id_trida}/{id_cviceni}")
 def priklad(id_trida, id_cviceni):
     priklad = Cviceni().get_priklad(int(id_trida), int(id_cviceni))
