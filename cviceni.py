@@ -18,22 +18,24 @@ class SadaPrikladu:
         self.priklady = []
 
     def vyrob(self):
-        dup_zbyva = 10000
+        DUP_INIT = 1000
+        dup_zbyva = DUP_INIT
         while len(self.priklady) < self.pocet_prikladu:
             priklad = self.zadani.vyrob_priklad()
 
-            # Odstranit duplicity
+            # Preskocit duplicity (pokud jich neni moc)
             if priklad in self.priklady and 0 < dup_zbyva:
                 dup_zbyva -= 1
                 continue
 
             self.priklady.append(priklad)
+            dup_zbyva = DUP_INIT
 
     def tisk(self):
         zadani = self.priklady[0].zadani
 
         # Vypis nadpis prvniho prikladu
-        print("Cvičení: %s" % zadani.nadpis)
+        print(zadani.nadpis)
 
         # Vypis ciselnou osu
         if isinstance(zadani, ZadaniBinarni):
@@ -831,6 +833,11 @@ if __name__ == "__main__":
             # if not (id_trida == 1 and id_zadani == 112):
             #     continue
             print("%s, cvičení %d: %s" % (nazev_trida, id_zadani, nazev_zadani))
-            for i in range(10):
-                priklad = Cviceni().get_priklad(id_trida, id_zadani)
-                priklad.tisk()
+            zadani = Cviceni().get_zadani(id_trida, id_zadani)
+
+            # priklad = zadani.vyrob_priklad()
+            # priklad.tisk()
+
+            sada = SadaPrikladu(zadani, 20)
+            sada.vyrob()
+            sada.tisk()

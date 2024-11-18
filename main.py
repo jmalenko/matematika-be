@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .cviceni import Tridy, Cviceni, Operand1, Operand2, Vysledek, ParametryBinarni, ParametryPosl
+from .cviceni import Tridy, Cviceni, Operand1, Operand2, Vysledek, ParametryBinarni, ParametryPosl, SadaPrikladu
 
 app = FastAPI()
 
@@ -22,6 +22,28 @@ app.add_middleware(
 @app.get("/api/matematika/test")
 def read_test():
     return {"zadani": [1, "+", 2, "=", 3], "neznama": 4}
+
+@app.get("/api/seznam")
+def seznam_vse():
+    tridy = Tridy().seznam()
+    dict_tridy = {}
+    for id_trida, nazev_trida in tridy.items():
+        seznam = Cviceni().seznam(id_trida)
+        dict_zadani = {}
+        for id_zadani, nazev_zadani in seznam.items():
+            dict_zadani[id_zadani] = {
+                "nazev_zadani": nazev_zadani
+            }
+        dict_tridy[id_trida] = {
+            "nazev_trida": nazev_trida,
+            "cviceni" : dict_zadani
+        }
+    seznam = {}
+    seznam["matematika"] = {
+        "nazev_predmet": "Matematika",
+        "tridy": dict_tridy
+    }
+    return seznam
 
 @app.get("/api/matematika/seznam_tridy")
 def seznam_tridy():
@@ -76,3 +98,23 @@ def priklad(id_trida, id_cviceni):
         return {"zadani": zadani, "neznama": 2 * priklad.zadani.neznama}
     else:
         raise TypeError('Unsupported type ' + type(priklad.parametry))
+
+@app.get("/api/matematika/{id_trida}/{id_cviceni}/tisk")
+def priklad_tisk(id_trida, id_cviceni):
+    zadani = Cviceni().get_zadani(int(id_trida), int(id_cviceni))
+    sada = SadaPrikladu(zadani, 20)
+    sada.vyrob()
+
+    response = {}
+    response["nazev_cviceni"] = zadani.nadpis
+
+    response["priklady"] = []
+    for priklad in sada.priklady:
+        if priklad.zadani.typ is Operand1: neznama = 0
+        elif priklad.zadani.typ is Operand2: neznama = 2
+        else: neznama = 4
+        response["priklady"].append(
+                {"zadani": [priklad.parametry.a, priklad.zadani.op_text, priklad.parametry.b, "=", priklad.parametry.c], "neznama": neznama}
+            )
+
+    return response
