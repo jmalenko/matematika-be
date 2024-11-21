@@ -830,8 +830,11 @@ if __name__ == "__main__":
         # print("%d: %s" % (id_trida, nazev_trida))
         seznam = Cviceni().seznam(id_trida)
         for id_zadani, nazev_zadani in seznam.items():
-            # if not (id_trida == 1 and id_zadani == 112):
+            # if not (id_trida == 1 and id_zadani == 112): # scitani do 20, dopln vysledek
+            # if not (id_trida == 1 and id_zadani == 118): # scitani do 20, posledni cviceni
+            # if not (id_trida == 2 and id_zadani == 56): # scitani do 100, posledni cviceni
             #     continue
+
             print("%s, cvičení %d: %s" % (nazev_trida, id_zadani, nazev_zadani))
             zadani = Cviceni().get_zadani(id_trida, id_zadani)
 
