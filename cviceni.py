@@ -48,7 +48,7 @@ class SadaPrikladu:
                 print(osa)
 
         for zadani in self.priklady:
-            zadani.tisk()
+            print(zadani)
 
 
 class Priklad:
@@ -56,8 +56,8 @@ class Priklad:
         self.zadani = zadani
         self.parametry = parametry
 
-    def tisk(self):
-        self.zadani.tisk(self.parametry)
+    def __str__(self):
+        return self.zadani.__str__(self.parametry)
 
     def __eq__(self, item):
         if self.zadani != item.zadani:
@@ -182,6 +182,7 @@ class ZadaniBinarni(Zadani):
         return trivialni
 
     def tisk(self, parametry):
+    def __str__(self, parametry):
         s = ""
         s += format_cislo(parametry.a, self.typ is not Operand1)
         s += " "
@@ -190,7 +191,7 @@ class ZadaniBinarni(Zadani):
         s += format_cislo(parametry.b, self.typ is not Operand2)
         s += " = "
         s += format_cislo(parametry.c, self.typ is not Vysledek)
-        print(s)
+        return s
 
     def __eq__(self, item):
         if self.__class__ != item.__class__:
@@ -485,7 +486,7 @@ a od <= B <= do
             if not (self.od <= sum <= self.do): return False
         return True
 
-    def tisk(self, parametry):
+    def __str__(self):
         s = ""
         for i in range(len(parametry.a)):
             n = parametry.a[i]
@@ -501,7 +502,7 @@ a od <= B <= do
                     s += format_cislo(abs(n), i != self.neznama)
         s += " = "
         s += format_cislo(parametry.b, self.n != self.neznama)
-        print(s)
+        return s
 
     def __eq__(self, item):
         if self.__class__ != item.__class__:
