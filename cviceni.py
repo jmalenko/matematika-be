@@ -577,14 +577,15 @@ class Cviceni:
             od = 1 if do < 10 else 0
             rozsah_od = do - 4
 
-            # Trick, force the lambda parameters to instantiate
-            zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Scitani(od, do, Vysledek).pridatPodminku(Rozsah(rozsah_od, do)))
-            zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Scitani(od, do, Operand2).pridatPodminku(Rozsah(rozsah_od, do)))
-            zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Scitani(od, do, Operand1).pridatPodminku(Rozsah(rozsah_od, do)))
+            if do <= 12:
+                # Trick, force the lambda parameters to instantiate
+                zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Scitani(od, do, Vysledek).pridatPodminku(Rozsah(rozsah_od, do)))
+                zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Scitani(od, do, Operand2).pridatPodminku(Rozsah(rozsah_od, do)))
+                zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Scitani(od, do, Operand1).pridatPodminku(Rozsah(rozsah_od, do)))
 
-            zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Odcitani(od, do, Vysledek).pridatPodminku(Rozsah(rozsah_od, do)))
-            zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Odcitani(od, do, Operand2).pridatPodminku(Rozsah(rozsah_od, do)))
-            zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Odcitani(od, do, Operand1).pridatPodminku(Rozsah(rozsah_od, do)))
+                zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Odcitani(od, do, Vysledek).pridatPodminku(Rozsah(rozsah_od, do)))
+                zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Odcitani(od, do, Operand2).pridatPodminku(Rozsah(rozsah_od, do)))
+                zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Odcitani(od, do, Operand1).pridatPodminku(Rozsah(rozsah_od, do)))
 
             zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: ScitaniOdcitaniVse(od, do).pridatPodminku(Rozsah(rozsah_od, do)))
 
@@ -831,7 +832,7 @@ if __name__ == "__main__":
         # print("%d: %s" % (id_trida, nazev_trida))
         seznam = Cviceni().seznam(id_trida)
         for id_zadani, nazev_zadani in seznam.items():
-            # if not (id_trida == 1 and id_zadani == 112): # scitani do 20, dopln vysledek
+            # if not (id_trida == 1 and id_zadani == 70): # scitani do 20, dopln vysledek
             # if not (id_trida == 1 and id_zadani == 118): # scitani do 20, posledni cviceni
             # if not (id_trida == 2 and id_zadani == 56): # scitani do 100, posledni cviceni
             #     continue
