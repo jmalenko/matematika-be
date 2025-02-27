@@ -77,11 +77,12 @@ class Zadani:
             try:
                 parametry = self.vstup_nahodny()
                 self.spocitej(parametry)
+                priklad = Priklad(self, parametry)
                 if self.over_vysledek(parametry):
                     break
             except ArithmeticError:
                 continue
-        return Priklad(self, parametry)
+        return priklad
 
     def vstup_nahodny(self):
         raise NotImplementedError()
@@ -156,32 +157,50 @@ class ZadaniBinarni(Zadani):
         self.do = do
         self.typ = typ
 
+    # Return: Nahodne vygenerovane parametry A a B
     def vstup_nahodny(self):
         parmametry = ParametryBinarni()
         parmametry.a = randint(self.od, self.do)
         parmametry.b = randint(self.od, self.do)
         return parmametry
 
+    # Return: True iff zadani je ok. To znamena, napriklad, ze se nepouziva nula nebo jedna (A+0 nebo A+1). Neni treba overovat, ze A+B=C, protoze C bylo dopocitano vzdy spravne spocitej().
     def over_vysledek(self, parametry):
         if not super().over_vysledek(parametry):
+            return False
+
+        # Parametry nejsou v povolenem rozsahu
+        if not (self.od <= parametry.a <= self.do):
+            return False
+        if not (self.od <= parametry.b <= self.do):
+            return False
+        if not (self.od <= parametry.c <= self.do):
             return False
 
         if self.nezajimave(parametry):
             return False
 
-        if not (self.od <= parametry.c <= self.do):
-            return False
-
         return True
 
+    # Return: True iff zadani&parametry jsou nezajimave
     def nezajimave(self, parametry):
+        # Kdyz jsou priklady do maleho cisla => zajimave
         if self.do <= 7:
             return False
-        # Trivialni (tj. 0 nebo 1) nebo
-        trivialni = parametry.a in [0, 1] or parametry.b in [0, 1] or parametry.c in [0, 1]
-        return trivialni
 
-    def tisk(self, parametry):
+        # Trivialni (tj. 0 nebo 1)
+        if parametry.a in [0, 1] or parametry.b in [0, 1] or parametry.c in [0, 1]:
+            return True
+
+        # Neni dosta velke
+        limit = self.do / 3 * 2
+        if isinstance(self, Scitani) and parametry.c < limit:
+            return True
+        if isinstance(self, Odcitani) and parametry.a < limit:
+            return True
+
+        return False
+
     def __str__(self, parametry):
         s = ""
         s += format_cislo(parametry.a, self.typ is not Operand1)
