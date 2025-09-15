@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "matematika-bruno",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
