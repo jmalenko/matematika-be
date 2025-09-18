@@ -3,9 +3,9 @@
 
 ## Deplyment
 
-Make sure you have Docker installed on your machine. Then, you can build and run the Docker container using the following commands:
+To deploy the backend component of the application, follow these steps:
 
 ```bash
 docker build -t matematika-be .
-docker run -p 8000:8000 matematika-be
+docker run -d --name matematika-be -p 8000:8000 matematika-be
 ```
