@@ -1,13 +1,17 @@
 meta {
   name: Test
   type: http
-  seq: 3
+  seq: 2
 }
 
 get {
-  url: http://127.0.0.1:8000/api/matematika/test
+  url: http://127.0.0.1:8000/api/{{predmet}}/test
   body: none
   auth: inherit
+}
+
+vars:pre-request {
+  predmet: matematika
 }
 
 settings {

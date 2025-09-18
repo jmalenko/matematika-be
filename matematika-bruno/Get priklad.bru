@@ -1,0 +1,15 @@
+meta {
+  name: Get priklad
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://127.0.0.1:8000/api/{{predmet}}/{{trida}}/{{cviceni}}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
