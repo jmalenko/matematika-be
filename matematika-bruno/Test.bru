@@ -5,13 +5,9 @@ meta {
 }
 
 get {
-  url: http://127.0.0.1:8000/api/{{predmet}}/test
+  url: http://{{host}}/api/{{predmet}}/test
   body: none
   auth: inherit
-}
-
-vars:pre-request {
-  predmet: matematika
 }
 
 settings {
