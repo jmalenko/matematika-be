@@ -5,14 +5,9 @@ from cviceni import Tridy, Cviceni, Operand1, Operand2, Vysledek, ParametryBinar
 
 app = FastAPI()
 
-origins = [
-    "http://localhost:5173", # DEV
-    "http://localhost:4173", # PROD
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
