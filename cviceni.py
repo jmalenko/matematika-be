@@ -38,14 +38,14 @@ class SadaPrikladu:
         print(zadani.nadpis)
 
         # Vypis ciselnou osu
-        if isinstance(zadani, ZadaniBinarni):
-            if zadani.do <= 20:
-                osa = "Číselná osa   "
-                for i in range(zadani.od, zadani.do + 1):
-                    if osa != "":
-                        osa += " "
-                    osa += str(i)
-                print(osa)
+        # if isinstance(zadani, ZadaniBinarni):
+        #     if zadani.do <= 20:
+        #         osa = "Číselná osa   "
+        #         for i in range(zadani.od, zadani.do + 1):
+        #             if osa != "":
+        #                 osa += " "
+        #             osa += str(i)
+        #         print(osa)
 
         for zadani in self.priklady:
             print(zadani)
