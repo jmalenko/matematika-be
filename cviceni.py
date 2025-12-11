@@ -1,5 +1,5 @@
 import functools
-from random import random, randint
+from random import randint
 
 
 def inicializace():
@@ -114,6 +114,7 @@ class Parametry:
 
 class Podminka:
     """Vraci True, pokud podminka plati pro dany priklad (parametry)"""
+
     def kontrola(self, parametry):
         raise NotImplementedError()
 
@@ -244,6 +245,13 @@ class ParametryBinarni(Parametry):
     b = None
     c = None
 
+    def __init__(self):
+        pass
+
+    def __init__(self, a=None, b=None):
+        self.a = a
+        self.b = b
+
     def __eq__(self, item):
         if self.__class__ != item.__class__:
             return False
@@ -256,7 +264,9 @@ class ParametryBinarni(Parametry):
     def __str__(self):
         def show(v):
             return "…" if v is None else str(v)
+
         return "[%s, %s, %s]" % (show(self.a), show(self.b), show(self.c))
+
 
 class Scitani(ZadaniBinarni):
     nadpis = "Sčítání"
@@ -297,6 +307,100 @@ class ScitaniOdcitaniVse(ZadaniBinarni):
             case _:
                 raise ValueError('Unsupported branch ' + volba)
         return zadani().vyrob_priklad()
+
+
+class ScitaniDesitek(Scitani):
+    nadpis = "Sčítání desítek"
+
+    def vstup_nahodny(self):
+        a = randint(self.od // 10 + 1, self.do // 10 - 1)
+        zbytek = self.do // 10 - a
+        b = randint(1, zbytek)
+        return ParametryBinarni(10 * a, 10 * b)
+
+
+class OdcitaniDesitek(Odcitani):
+    nadpis = "Odčítání desítek"
+
+    def vstup_nahodny(self):
+        a = randint(self.od // 10 + 1, self.do // 10)
+        b = randint(1, a)
+        return ParametryBinarni(10 * a, 10 * b)
+
+
+class ScitaniJednocifernymCislem(Scitani):
+    nadpis = "Sčítání jednociferným číslem"
+
+    def vstup_nahodny(self):
+        d = randint(2, self.do // 10)  # Aby desitky byly vetsi nez 20
+        a = randint(0, 8)
+        b = randint(1, 9 - a)
+        return ParametryBinarni(10 * d + a, b)
+
+
+class OdcitaniJednocifernymCislem(Odcitani):
+    nadpis = "Odčítání jednociferným číslem"
+
+    def vstup_nahodny(self):
+        d = randint(2, self.do // 10)
+        a = randint(1, 9)
+        b = randint(1, a)
+        return ParametryBinarni(10 * d + a, b)
+
+
+class ScitaniDvojcifernymCislem(Scitani):
+    nadpis = "Sčítání dvojciferným číslem"
+
+    def vstup_nahodny(self):
+        a = randint(self.od, self.do)
+        desitky = a // 10
+        jednotky = a % 10
+        if 8 <= desitky: raise ArithmeticError()
+        if jednotky == 9: raise ArithmeticError()
+        d = randint(1, 8 - desitky)
+        b = randint(1, 9 - jednotky)
+        return ParametryBinarni(a, d * 10 + b)
+
+
+class OdcitaniDvojcifernymCislem(Odcitani):
+    nadpis = "Odčítání dvojciferným číslem"
+
+    def vstup_nahodny(self):
+        a = randint(self.od, self.do)
+        desitky = a // 10
+        jednotky = a % 10
+        if desitky <= 2: raise ArithmeticError()
+        if jednotky == 0: raise ArithmeticError()
+        d = randint(1, desitky)
+        b = randint(0, jednotky)
+        return ParametryBinarni(a, d * 10 + b)
+
+
+class ScitaniSPrechodemPresDesitku(Scitani):
+    def __init__(self, od, do, typ, kolik):
+        super().__init__(od, do, typ)
+        self.kolik = kolik  # Maximalne kolik pridat, aby doslo k prechodu desitky
+        self.nadpis = "Sčítání s přechodem desítky (max o %d)" % kolik if kolik != do else "Sčítání s přechodem desítky"
+
+    def vstup_nahodny(self):
+        a = randint(self.od, self.do)
+        jednotky = a % 10
+        zbytek = 10 - jednotky
+        b = randint(zbytek, zbytek + self.kolik)
+        return ParametryBinarni(a, b)
+
+
+class OdcitaniSPrechodemPresDesitku(Odcitani):
+    def __init__(self, od, do, typ, kolik):
+        super().__init__(od, do, typ)
+        self.kolik = kolik  # Maximalne kolik pridat, aby doslo k prechodu desitky
+        self.nadpis = "Odčítání s přechodem desítky (max o %d)" % kolik if kolik != do else "odčítání s přechodem desítky"
+
+    def vstup_nahodny(self):
+        a = randint(self.od, self.do)
+        jednotky = a % 10
+        b = randint(jednotky, jednotky + self.kolik)
+        return ParametryBinarni(a, b)
 
 
 class NasobeniDeleniVse(ZadaniBinarni):
@@ -716,18 +820,41 @@ class Cviceni:
 
     def zadani_scitani_odcitani_do_100(self):
         zadani = []
+        od = 0
+        do = 100
 
-        # TODO Scitani a odcitani do 100
+        # Scitani a odcitani desitek
 
-        # Operace s desitkami
+        zadani.append(lambda od=od, do=do: ScitaniDesitek(od, do, Vysledek))
+        zadani.append(lambda od=od, do=do: OdcitaniDesitek(od, do, Vysledek))
 
-        # Operace bez prechodu desitly
+        # Scitani a odcitani jednocifernym cislem
 
-        # Operace s prechodem desitky
+        zadani.append(lambda od=od, do=do: ScitaniJednocifernymCislem(od, do, Vysledek))
+        zadani.append(lambda od=od, do=do: OdcitaniJednocifernymCislem(od, do, Vysledek))
+
+        # Scitani a odcitani dvojcifernym cislem
+
+        zadani.append(lambda od=od, do=do: ScitaniDvojcifernymCislem(od, do, Vysledek))
+        zadani.append(lambda od=od, do=do: OdcitaniDvojcifernymCislem(od, do, Vysledek))
+
+        # Scitani a odcitani s prechodem pres desitku
+
+        kolik = 3
+        zadani.append(lambda od=od, do=do, kolik=kolik: ScitaniSPrechodemPresDesitku(od, do, Vysledek, kolik))
+        zadani.append(lambda od=od, do=do, kolik=kolik: OdcitaniSPrechodemPresDesitku(od, do, Vysledek, kolik))
+
+        kolik = 13
+        zadani.append(lambda od=od, do=do, kolik=kolik: ScitaniSPrechodemPresDesitku(od, do, Vysledek, kolik))
+        zadani.append(lambda od=od, do=do, kolik=kolik: OdcitaniSPrechodemPresDesitku(od, do, Vysledek, kolik))
+
+        kolik = do
+        zadani.append(lambda od=od, do=do, kolik=kolik: ScitaniSPrechodemPresDesitku(od, do, Vysledek, kolik))
+        zadani.append(lambda od=od, do=do, kolik=kolik: OdcitaniSPrechodemPresDesitku(od, do, Vysledek, kolik))
 
         # Závěrečný příklad
 
-        zadani.append(lambda od=0, do=100: ScitaniOdcitaniVse(0, do))
+        zadani.append(lambda od=od, do=do: ScitaniOdcitaniVse(od, do))
 
         return zadani
 
@@ -867,8 +994,11 @@ if __name__ == "__main__":
             # if not (id_trida == 1 and id_zadani == 118): # scitani a odcitani do 20, posledni cviceni
             # if not (id_trida == 2 and id_zadani == 56): # scitani do 100, posledni cviceni
             # if not (id_trida == 3 and id_zadani == 55): # nasobeni a deleni do 100, posledni cviceni
-            if not (id_trida == 2 and id_zadani == 1): # scitani do 100, for testing
+            # if not (id_trida == 2 and id_zadani == 7):  # scitani do 100, for testing
+            if not (id_trida == 2):  # scitani do 100
                 continue
+
+            # print("id_trida=%d, id_zadani=%d" % (id_trida, id_zadani))
 
             for pocetSad in range(1):
                 print("%s, cvičení %d: %s" % (nazev_trida, id_zadani, nazev_zadani))
