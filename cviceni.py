@@ -37,6 +37,7 @@ class SadaPrikladu:
         # Vypis nadpis prvniho prikladu
         print(zadani.nadpis)
 
+        # TODO Ciselnou osu zobrazit jen v prvni tride
         # Vypis ciselnou osu
         # if isinstance(zadani, ZadaniBinarni):
         #     if zadani.do <= 20:
