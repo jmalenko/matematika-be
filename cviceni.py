@@ -383,11 +383,12 @@ class ScitaniSPrechodemPresDesitku(Scitani):
         self.nadpis = "Sčítání s přechodem desítky (max o %d)" % kolik if kolik != do else "Sčítání s přechodem desítky"
 
     def vstup_nahodny(self):
-        a = randint(self.od, self.do)
+        a = randint(21, self.do)
         jednotky = a % 10
         zbytek = 10 - jednotky
-        b = randint(zbytek, zbytek + self.kolik)
-        return ParametryBinarni(a, b)
+        d = randint(0, self.kolik // 10)
+        b = zbytek + randint(0, self.kolik % 10)
+        return ParametryBinarni(a, 10 * d + b)
 
 
 class OdcitaniSPrechodemPresDesitku(Odcitani):
@@ -397,10 +398,11 @@ class OdcitaniSPrechodemPresDesitku(Odcitani):
         self.nadpis = "Odčítání s přechodem desítky (max o %d)" % kolik if kolik != do else "Odčítání s přechodem desítky"
 
     def vstup_nahodny(self):
-        a = randint(self.od, self.do)
+        a = randint(21, self.do)
         jednotky = a % 10
-        b = randint(jednotky, jednotky + self.kolik)
-        return ParametryBinarni(a, b)
+        d = randint(0, self.kolik // 10)
+        b = jednotky + randint(1, self.kolik % 10)
+        return ParametryBinarni(a, 10 * d + b)
 
 
 class NasobeniDeleniVse(ZadaniBinarni):
