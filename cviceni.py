@@ -625,7 +625,7 @@ a od <= B <= do
             if not (self.od <= sum <= self.do): return False
         return True
 
-    def __str__(self):
+    def __str__(self, parametry):
         s = ""
         for i in range(len(parametry.a)):
             n = parametry.a[i]
