@@ -394,7 +394,7 @@ class OdcitaniSPrechodemPresDesitku(Odcitani):
     def __init__(self, od, do, typ, kolik):
         super().__init__(od, do, typ)
         self.kolik = kolik  # Maximalne kolik pridat, aby doslo k prechodu desitky
-        self.nadpis = "Odčítání s přechodem desítky (max o %d)" % kolik if kolik != do else "odčítání s přechodem desítky"
+        self.nadpis = "Odčítání s přechodem desítky (max o %d)" % kolik if kolik != do else "Odčítání s přechodem desítky"
 
     def vstup_nahodny(self):
         a = randint(self.od, self.do)
