@@ -1023,8 +1023,8 @@ if __name__ == "__main__":
             # if not (id_trida == 2 and id_zadani == 56): # scitani do 100, posledni cviceni
             # if not (id_trida == 3 and id_zadani == 55): # nasobeni a deleni do 100, posledni cviceni
             # if not (id_trida == 2 and id_zadani == 7):  # scitani do 100, for testing
-            if not (id_trida == 2):  # scitani do 100
-                continue
+            # if not (id_trida == 2):  # scitani do 100
+            #     continue
 
             print("id_trida=%d, id_zadani=%d" % (id_trida, id_zadani))
 
