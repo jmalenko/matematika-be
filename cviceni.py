@@ -113,9 +113,9 @@ class Parametry:
 
 
 class Podminka:
-    """Vraci True, pokud podminka plati pro dany priklad (parametry)"""
 
     def kontrola(self, parametry):
+        """Vraci True, pokud podminka plati pro dany priklad (parametry)"""
         raise NotImplementedError()
 
 
@@ -141,6 +141,30 @@ class RozsahSplnujiVsechnaCisla(Podminka):
                 self.od <= parametry.a <= self.do and
                 self.od <= parametry.b <= self.do and
                 self.od <= parametry.c <= self.do)
+
+
+class Zajimave(Podminka):
+    def __init__(self, od, do):
+        self.od = od
+        self.do = do
+
+    def kontrola(self, parametry):
+        # Kdyz jsou priklady do maleho cisla => ok
+        if self.do <= 7:
+            return True
+
+        # Trivialni (tj. 0 nebo 1)
+        if parametry.a in [0, 1] or parametry.b in [0, 1] or parametry.c in [0, 1]:
+            return False
+
+        # Neni dost velke
+        limit = self.do / 3 * 2
+        if isinstance(self, Scitani) and parametry.c < limit:
+            return False
+        if isinstance(self, Odcitani) and parametry.a < limit:
+            return False
+
+        return True
 
 
 class Max(Podminka):
@@ -188,29 +212,7 @@ class ZadaniBinarni(Zadani):
         if not RozsahSplnujiVsechnaCisla(self.od, self.do).kontrola(parametry):
             return False
 
-        if self.nezajimave(parametry):
-            return False
-
         return True
-
-    # Return: True iff zadani&parametry jsou nezajimave
-    def nezajimave(self, parametry):
-        # Kdyz jsou priklady do maleho cisla => zajimave
-        if self.do <= 7:
-            return False
-
-        # Trivialni (tj. 0 nebo 1)
-        if parametry.a in [0, 1] or parametry.b in [0, 1] or parametry.c in [0, 1]:
-            return True
-
-        # Neni dost velke
-        limit = self.do / 3 * 2
-        if isinstance(self, Scitani) and parametry.c < limit:
-            return True
-        if isinstance(self, Odcitani) and parametry.a < limit:
-            return True
-
-        return False
 
     def __str__(self, parametry):
         s = ""
@@ -718,26 +720,46 @@ class Cviceni:
 
             if do <= 12:
                 # Trick, force the lambda parameters to instantiate
-                zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Scitani(od, do, Vysledek).pridatPodminku(RozsahSplnujeAsponJednoCislo(rozsah_od, do)))
-                zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Scitani(od, do, Operand2).pridatPodminku(RozsahSplnujeAsponJednoCislo(rozsah_od, do)))
-                zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Scitani(od, do, Operand1).pridatPodminku(RozsahSplnujeAsponJednoCislo(rozsah_od, do)))
+                zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Scitani(od, do, Vysledek)
+                              .pridatPodminku(RozsahSplnujeAsponJednoCislo(rozsah_od, do))
+                              .pridatPodminku(Zajimave(od, do)))
+                zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Scitani(od, do, Operand2)
+                              .pridatPodminku(RozsahSplnujeAsponJednoCislo(rozsah_od, do))
+                              .pridatPodminku(Zajimave(od, do)))
+                zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Scitani(od, do, Operand1)
+                              .pridatPodminku(RozsahSplnujeAsponJednoCislo(rozsah_od, do))
+                              .pridatPodminku(Zajimave(od, do)))
 
-                zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Odcitani(od, do, Vysledek).pridatPodminku(RozsahSplnujeAsponJednoCislo(rozsah_od, do)))
-                zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Odcitani(od, do, Operand2).pridatPodminku(RozsahSplnujeAsponJednoCislo(rozsah_od, do)))
-                zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Odcitani(od, do, Operand1).pridatPodminku(RozsahSplnujeAsponJednoCislo(rozsah_od, do)))
+                zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Odcitani(od, do, Vysledek)
+                              .pridatPodminku(RozsahSplnujeAsponJednoCislo(rozsah_od, do))
+                              .pridatPodminku(Zajimave(od, do)))
+                zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Odcitani(od, do, Operand2)
+                              .pridatPodminku(RozsahSplnujeAsponJednoCislo(rozsah_od, do))
+                              .pridatPodminku(Zajimave(od, do)))
+                zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: Odcitani(od, do, Operand1)
+                              .pridatPodminku(RozsahSplnujeAsponJednoCislo(rozsah_od, do))
+                              .pridatPodminku(Zajimave(od, do)))
 
-            zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: ScitaniOdcitaniVse(od, do).pridatPodminku(RozsahSplnujeAsponJednoCislo(rozsah_od, do)))
+            zadani.append(lambda od=od, do=do, rozsah_od=rozsah_od: ScitaniOdcitaniVse(od, do)
+                          .pridatPodminku(RozsahSplnujeAsponJednoCislo(rozsah_od, do))
+                          .pridatPodminku(Zajimave(od, do)))
 
             # Nula, podminky nejsou nutne
             if do == 9:
                 od = 0
-                zadani.append(lambda od=od, do=do: Scitani(od, do, Vysledek))
-                zadani.append(lambda od=od, do=do: Scitani(od, do, Operand2))
-                zadani.append(lambda od=od, do=do: Scitani(od, do, Operand1))
+                zadani.append(lambda od=od, do=do: Scitani(od, do, Vysledek)
+                              .pridatPodminku(Zajimave(od, do)))
+                zadani.append(lambda od=od, do=do: Scitani(od, do, Operand2)
+                              .pridatPodminku(Zajimave(od, do)))
+                zadani.append(lambda od=od, do=do: Scitani(od, do, Operand1)
+                              .pridatPodminku(Zajimave(od, do)))
 
-                zadani.append(lambda od=od, do=do: Odcitani(od, do, Vysledek))
-                zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand2))
-                zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand1))
+                zadani.append(lambda od=od, do=do: Odcitani(od, do, Vysledek)
+                              .pridatPodminku(Zajimave(od, do)))
+                zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand2)
+                              .pridatPodminku(Zajimave(od, do)))
+                zadani.append(lambda od=od, do=do: Odcitani(od, do, Operand1)
+                              .pridatPodminku(Zajimave(od, do)))
 
         # Více operandů, podminka je vyjadrena v cisle od
         do = 20
@@ -754,7 +776,9 @@ class Cviceni:
         zadani.append(lambda od=od, do=do: Posloupnost(4, od, do, 0))
 
         # Závěrečný příklad
-        zadani.append(lambda: ScitaniOdcitaniVse(0, 20).pridatPodminku(RozsahSplnujeAsponJednoCislo(0, 20)))
+        zadani.append(lambda: ScitaniOdcitaniVse(0, 20)
+                      .pridatPodminku(RozsahSplnujeAsponJednoCislo(0, 20))
+                      .pridatPodminku(Zajimave(od, do)))
 
         return zadani
 
