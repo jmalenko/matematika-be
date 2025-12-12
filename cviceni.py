@@ -403,7 +403,7 @@ class OdcitaniSPrechodemPresDesitku(Odcitani):
         a = randint(21, self.do)
         jednotky = a % 10
         d = randint(0, self.kolik // 10)
-        b = jednotky + randint(1, self.kolik % 10)
+        b = jednotky + randint(1, self.kolik % 10 if self.kolik % 10 != 0 else 10)
         return ParametryBinarni(a, 10 * d + b)
 
 
@@ -1016,6 +1016,8 @@ if __name__ == "__main__":
         # print("%d: %s" % (id_trida, nazev_trida))
         seznam = Cviceni().seznam(id_trida)
         for id_zadani, nazev_zadani in seznam.items():
+            # if not (id_trida == 1 and id_zadani == 71):  # scitani a odcitani do 20, dopln vysledek
+            # if not (id_trida == 1):  # scitani a odcitani do 20
             # if not (id_trida == 1 and id_zadani == 70): # scitani a odcitani do 20, dopln vysledek
             # if not (id_trida == 1 and id_zadani == 118): # scitani a odcitani do 20, posledni cviceni
             # if not (id_trida == 2 and id_zadani == 56): # scitani do 100, posledni cviceni
@@ -1024,7 +1026,7 @@ if __name__ == "__main__":
             if not (id_trida == 2):  # scitani do 100
                 continue
 
-            # print("id_trida=%d, id_zadani=%d" % (id_trida, id_zadani))
+            print("id_trida=%d, id_zadani=%d" % (id_trida, id_zadani))
 
             for pocetSad in range(1):
                 print("%s, cvičení %d: %s" % (nazev_trida, id_zadani, nazev_zadani))
