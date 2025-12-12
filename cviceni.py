@@ -378,7 +378,7 @@ class OdcitaniDvojcifernymCislem(Odcitani):
         return ParametryBinarni(a, d * 10 + b)
 
 
-class ScitaniSPrechodemPresDesitku(Scitani):
+class ScitaniSPrechodemDesitky(Scitani):
     def __init__(self, od, do, typ, kolik):
         super().__init__(od, do, typ)
         self.kolik = kolik  # Maximalne kolik pridat, aby doslo k prechodu desitky
@@ -393,7 +393,7 @@ class ScitaniSPrechodemPresDesitku(Scitani):
         return ParametryBinarni(a, 10 * d + b)
 
 
-class OdcitaniSPrechodemPresDesitku(Odcitani):
+class OdcitaniSPrechodemDesitky(Odcitani):
     def __init__(self, od, do, typ, kolik):
         super().__init__(od, do, typ)
         self.kolik = kolik  # Maximalne kolik pridat, aby doslo k prechodu desitky
@@ -867,16 +867,16 @@ class Cviceni:
         # Scitani a odcitani s prechodem pres desitku
 
         kolik = 3
-        zadani.append(lambda od=od, do=do, kolik=kolik: ScitaniSPrechodemPresDesitku(od, do, Vysledek, kolik))
-        zadani.append(lambda od=od, do=do, kolik=kolik: OdcitaniSPrechodemPresDesitku(od, do, Vysledek, kolik))
+        zadani.append(lambda od=od, do=do, kolik=kolik: ScitaniSPrechodemDesitky(od, do, Vysledek, kolik))
+        zadani.append(lambda od=od, do=do, kolik=kolik: OdcitaniSPrechodemDesitky(od, do, Vysledek, kolik))
 
         kolik = 13
-        zadani.append(lambda od=od, do=do, kolik=kolik: ScitaniSPrechodemPresDesitku(od, do, Vysledek, kolik))
-        zadani.append(lambda od=od, do=do, kolik=kolik: OdcitaniSPrechodemPresDesitku(od, do, Vysledek, kolik))
+        zadani.append(lambda od=od, do=do, kolik=kolik: ScitaniSPrechodemDesitky(od, do, Vysledek, kolik))
+        zadani.append(lambda od=od, do=do, kolik=kolik: OdcitaniSPrechodemDesitky(od, do, Vysledek, kolik))
 
         kolik = do
-        zadani.append(lambda od=od, do=do, kolik=kolik: ScitaniSPrechodemPresDesitku(od, do, Vysledek, kolik))
-        zadani.append(lambda od=od, do=do, kolik=kolik: OdcitaniSPrechodemPresDesitku(od, do, Vysledek, kolik))
+        zadani.append(lambda od=od, do=do, kolik=kolik: ScitaniSPrechodemDesitky(od, do, Vysledek, kolik))
+        zadani.append(lambda od=od, do=do, kolik=kolik: OdcitaniSPrechodemDesitky(od, do, Vysledek, kolik))
 
         # Závěrečný příklad
 
