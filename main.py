@@ -1,6 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+import os
+import sys
+
+project_root = os.path.dirname(__file__)
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 from cviceni import Tridy, Cviceni, Operand1, Operand2, Vysledek, ParametryBinarni, ParametryPosl, SadaPrikladu
 
 app = FastAPI()
