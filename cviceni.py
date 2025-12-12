@@ -389,7 +389,7 @@ class ScitaniSPrechodemDesitky(Scitani):
         jednotky = a % 10
         zbytek = 10 - jednotky
         d = randint(0, self.kolik // 10)
-        b = zbytek + randint(0, self.kolik % 10)
+        b = zbytek + randint(0, self.kolik % 10 if self.kolik % 10 != 0 else 10)
         return ParametryBinarni(a, 10 * d + b)
 
 
