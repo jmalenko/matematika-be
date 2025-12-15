@@ -354,7 +354,7 @@ class ScitaniDvojcifernymCislem(Scitani):
     nadpis = "Sčítání dvojciferným číslem"
 
     def vstup_nahodny(self):
-        a = randint(self.od, self.do)
+        a = randint(21, self.do)
         desitky = a // 10
         jednotky = a % 10
         if 8 <= desitky: raise ArithmeticError()
@@ -375,7 +375,9 @@ class OdcitaniDvojcifernymCislem(Odcitani):
         if jednotky == 0: raise ArithmeticError()
         d = randint(1, desitky)
         b = randint(0, jednotky)
-        return ParametryBinarni(a, d * 10 + b)
+        db = d * 10 + b
+        if db <= 20: raise ArithmeticError()
+        return ParametryBinarni(a, db)
 
 
 class ScitaniSPrechodemDesitky(Scitani):
@@ -390,7 +392,10 @@ class ScitaniSPrechodemDesitky(Scitani):
         zbytek = 10 - jednotky
         d = randint(0, self.kolik // 10)
         b = zbytek + randint(0, self.kolik % 10 if self.kolik % 10 != 0 else 10)
-        return ParametryBinarni(a, 10 * d + b)
+        db = d * 10 + b
+        if self.kolik < db: raise ArithmeticError()
+        if 100 <= self.kolik and db <= 20: raise ArithmeticError()
+        return ParametryBinarni(a, db)
 
 
 class OdcitaniSPrechodemDesitky(Odcitani):
@@ -404,7 +409,10 @@ class OdcitaniSPrechodemDesitky(Odcitani):
         jednotky = a % 10
         d = randint(0, self.kolik // 10)
         b = jednotky + randint(1, self.kolik % 10 if self.kolik % 10 != 0 else 10)
-        return ParametryBinarni(a, 10 * d + b)
+        db = d * 10 + b
+        if self.kolik < db: raise ArithmeticError()
+        if 100 <= self.kolik and db <= 20: raise ArithmeticError()
+        return ParametryBinarni(a, db)
 
 
 class NasobeniDeleniVse(ZadaniBinarni):
