@@ -78,12 +78,10 @@ class Zadani:
             try:
                 parametry = self.vstup_nahodny()
                 self.spocitej(parametry)
-                priklad = Priklad(self, parametry)
                 if self.over_vysledek(parametry):
-                    break
+                    return Priklad(self, parametry)
             except ArithmeticError:
                 continue
-        return priklad
 
     def vstup_nahodny(self):
         raise NotImplementedError()
@@ -308,7 +306,10 @@ class ScitaniOdcitaniVse(ZadaniBinarni):
                 zadani = lambda od=self.od, do=self.do: Odcitani(od, do, Operand1)
             case _:
                 raise ValueError('Unsupported branch ' + volba)
-        return zadani().vyrob_priklad()
+        zadani2 = zadani()
+        for podminka in self.podminky:
+            zadani2 = zadani2.pridatPodminku(podminka)
+        return zadani2.vyrob_priklad()
 
 
 class ScitaniDesitek(Scitani):
@@ -900,7 +901,12 @@ class Cviceni:
 
         # Závěrečný příklad
 
-        zadani.append(lambda od=od, do=do: ScitaniOdcitaniVse(od, do))
+        def _scitani_odcitani_vse_s_podminkou_na_rozah(od, do):
+            s = ScitaniOdcitaniVse(od, do)
+            s.pridatPodminku(RozsahSplnujiVsechnaCisla(21, 100))
+            return s
+
+        zadani.append(lambda od=od, do=do: _scitani_odcitani_vse_s_podminkou_na_rozah(od, do))
 
         return zadani
 
