@@ -390,13 +390,14 @@ class ScitaniSPrechodemDesitky(Scitani):
     def vstup_nahodny(self):
         a = randint(21, self.do)
         jednotky = a % 10
+        if jednotky == 0: raise ArithmeticError()
         zbytek = 10 - jednotky
         if self.kolik < 10:
             d = 0
             b = zbytek + randint(0, self.kolik) # muze byt vetsi nez 10
         else:
             d = randint(0, self.kolik // 10)
-            b = zbytek + randint(0, 9)
+            b = randint(zbytek, 9)
         db = d * 10 + b
         if 10 < self.kolik and zbytek + self.kolik < db:
             raise ArithmeticError()
@@ -420,7 +421,7 @@ class OdcitaniSPrechodemDesitky(Odcitani):
             b = jednotky + randint(1, self.kolik)
         else:
             d = randint(0, self.kolik // 10)
-            b = jednotky + randint(0, 9)
+            b = randint(jednotky + 1, 9)
         db = d * 10 + b
         if 10 < self.kolik and jednotky + self.kolik < db:
             raise ArithmeticError()
