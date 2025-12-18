@@ -390,10 +390,15 @@ class ScitaniSPrechodemDesitky(Scitani):
         a = randint(21, self.do)
         jednotky = a % 10
         zbytek = 10 - jednotky
-        d = randint(0, self.kolik // 10)
-        b = zbytek + randint(0, self.kolik % 10 if self.kolik % 10 != 0 else 10)
+        if self.kolik < 10:
+            d = 0
+            b = zbytek + randint(0, self.kolik) # muze byt vetsi nez 10
+        else:
+            d = randint(0, self.kolik // 10)
+            b = zbytek + randint(0, 9)
         db = d * 10 + b
-        if self.kolik < db: raise ArithmeticError()
+        if 10 < self.kolik and zbytek + self.kolik < db:
+            raise ArithmeticError()
         if 100 <= self.kolik and db <= 20: raise ArithmeticError()
         return ParametryBinarni(a, db)
 
@@ -407,10 +412,17 @@ class OdcitaniSPrechodemDesitky(Odcitani):
     def vstup_nahodny(self):
         a = randint(21, self.do)
         jednotky = a % 10
-        d = randint(0, self.kolik // 10)
-        b = jednotky + randint(1, self.kolik % 10 if self.kolik % 10 != 0 else 10)
+        if jednotky == 0: raise ArithmeticError() # aby byl priklad zajimavy
+        if jednotky == 9: raise ArithmeticError() # aby bylo co odecitat
+        if self.kolik < 10:
+            d = 0
+            b = jednotky + randint(1, self.kolik)
+        else:
+            d = randint(0, self.kolik // 10)
+            b = jednotky + randint(0, 9)
         db = d * 10 + b
-        if self.kolik < db: raise ArithmeticError()
+        if 10 < self.kolik and jednotky + self.kolik < db:
+            raise ArithmeticError()
         if 100 <= self.kolik and db <= 20: raise ArithmeticError()
         return ParametryBinarni(a, db)
 
@@ -878,7 +890,7 @@ class Cviceni:
         zadani.append(lambda od=od, do=do, kolik=kolik: ScitaniSPrechodemDesitky(od, do, Vysledek, kolik))
         zadani.append(lambda od=od, do=do, kolik=kolik: OdcitaniSPrechodemDesitky(od, do, Vysledek, kolik))
 
-        kolik = 13
+        kolik = 20
         zadani.append(lambda od=od, do=do, kolik=kolik: ScitaniSPrechodemDesitky(od, do, Vysledek, kolik))
         zadani.append(lambda od=od, do=do, kolik=kolik: OdcitaniSPrechodemDesitky(od, do, Vysledek, kolik))
 
